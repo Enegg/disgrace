@@ -1,0 +1,18 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "files.exclude": {
+        "**/__pycache__": true,
+    },
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports.ruff": "explicit",
+            "source.fixAll.ruff": "explicit",
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.rulers": [
+            90
+        ]
+    },
+    "python.REPL.enableREPLSmartSend": false,
+}
