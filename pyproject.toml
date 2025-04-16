@@ -11,6 +11,7 @@ dependencies = [
     "anyio>=4.9.0",
     "attrs>=25.3.0",
     "httpx>=0.28.1",
+    "msgspec>=0.19.0",
     "typing-extensions>=4.13.2",
 ]
 
