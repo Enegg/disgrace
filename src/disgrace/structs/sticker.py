@@ -1,0 +1,48 @@
+from collections import abc
+from typing import Literal
+
+import msgspec
+
+from disgrace import ids
+
+type RawStickerType = Literal[
+    1,  # standard
+    2,  # guild
+]
+type RawStickerFormatType = Literal[
+    1,  # png
+    2,  # apng
+    3,  # lottie
+    4,  # gif
+]
+
+
+class RawSticker(msgspec.Struct, kw_only=True):
+    id: ids.StickerId
+    pack_id: ids.StickerPackId | msgspec.UnsetType = msgspec.UNSET
+    name: str
+    description: str | None
+    tags: str
+    type: RawStickerType
+    format_type: RawStickerFormatType
+    available: bool = True
+    guild_id: ids.GuildId | msgspec.UnsetType = msgspec.UNSET
+    sort_value: int | msgspec.UnsetType = msgspec.UNSET
+
+
+class RawStickerItem(msgspec.Struct, kw_only=True):
+    id: ids.StickerId
+    name: str
+    format_type: RawStickerFormatType
+
+
+class RawStickerPack(msgspec.Struct, kw_only=True):
+    id: ids.StickerPackId
+    stickers: abc.Sequence[RawSticker]
+    name: str
+    sku_id: ids.SkuId
+    cover_sticker_id: ids.StickerId | msgspec.UnsetType = msgspec.UNSET
+    description: str
+    banner_asset_id: ids.SnowflakeId | msgspec.UnsetType = msgspec.UNSET
+    # TODO: figure what Snowflake this is about
+    # "id of the sticker pack's banner image"
