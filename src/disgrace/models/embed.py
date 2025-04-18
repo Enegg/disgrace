@@ -69,13 +69,13 @@ class Field(msgspec.Struct, frozen=True, kw_only=True):
 
 
 class EmbedBuilder(msgspec.Struct, kw_only=True):
-    default_color: ClassVar[Color | None] = None
+    default_color: ClassVar[Color] = Color.none
 
     title: str = ""
     description: str = ""
     url: str = ""
     timestamp: datetime.datetime | None = None
-    color: Color | None = None
+    color: Color = Color.none
     footer: Footer | None = None
     image: Media | None = None
     thumbnail: Media | None = None
@@ -111,7 +111,7 @@ class EmbedBuilder(msgspec.Struct, kw_only=True):
             self.timestamp = timestamp
 
         if color is EditMode.remove:
-            self.color = None
+            self.color = Color.none
         elif color is not EditMode.keep:
             self.color = color
 
@@ -129,6 +129,15 @@ class EmbedBuilder(msgspec.Struct, kw_only=True):
     def build(self) -> "Embed":
         return Embed(
             title=self.title,
+            description=self.description,
+            url=self.url,
+            timestamp=self.timestamp,
+            color=self.color or self.default_color,
+            footer=self.footer,
+            image=self.image,
+            thumbnail=self.thumbnail,
+            author=self.author,
+            fields=tuple(self.fields),
         )
 
 
@@ -137,7 +146,7 @@ class Embed(msgspec.Struct, frozen=True, kw_only=True):
     description: str = ""
     url: str = ""
     timestamp: datetime.datetime | None = None
-    color: Color | None = None
+    color: Color = msgspec.field(default_factory=lambda: EmbedBuilder.default_color)
     footer: Footer | None = None
     image: Media | None = None
     thumbnail: Media | None = None
@@ -152,7 +161,7 @@ class Embed(msgspec.Struct, frozen=True, kw_only=True):
             timestamp=msgspec.UNSET
             if self.timestamp is None
             else isoformat_utc(self.timestamp),
-            color=msgspec.UNSET if self.color is None else self.color.value,
+            color=self.color.value or msgspec.UNSET,
             footer=msgspec.UNSET if self.footer is None else self.footer.to_struct(),
             image=msgspec.UNSET if self.image is None else self.image.to_struct(),
             thumbnail=msgspec.UNSET

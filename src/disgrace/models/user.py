@@ -1,4 +1,4 @@
-from typing import Final, Self, override
+from typing import Final, Literal, Self, override
 
 import msgspec
 
@@ -20,7 +20,7 @@ class User(disgrace.abc.Mentionable, msgspec.Struct, kw_only=True):
     system: bool = False
     mfa_enabled: bool = False
     banner: str | None = None
-    accent_color: Color | None = None
+    accent_color: Color = Color.none
     locale: Locale | None = None  # TODO: why can this be unset?
     verified: bool = False
     flags: UserFlags = UserFlags.none
@@ -99,6 +99,9 @@ class NullUser(disgrace.abc.Mentionable):
     @property
     def premium_type(self) -> UserPremiumType:
         return UserPremiumType.none
+
+    def __bool__(self) -> Literal[False]:
+        return False
 
 
 if True:

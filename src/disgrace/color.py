@@ -1,6 +1,6 @@
 import colorsys
 import random
-from typing import Self
+from typing import ClassVar, Self
 
 import attrs
 
@@ -9,9 +9,11 @@ __all__ = ("Color",)
 
 @attrs.frozen
 class Color:
-    """Represents a Discord role color."""
+    """A Discord color value."""
 
-    value: int = 0
+    none: ClassVar[Self]
+    """Special value denoting lack of color."""
+    value: int
 
     @property
     def red(self) -> int:
@@ -24,6 +26,9 @@ class Color:
     @property
     def blue(self) -> int:
         return self.value & 0xFF
+
+    def __bool__(self) -> bool:
+        return bool(self.value)
 
     def to_rgb(self) -> tuple[int, int, int]:
         return (self.red, self.green, self.blue)
@@ -46,7 +51,10 @@ class Color:
         return cls(int(value.removeprefix("#").removeprefix("0x"), base=16))
 
     @classmethod
-    def random(cls, *, seed: int | str | float | bytes | bytearray | None = None) -> Self:
+    def random(cls, *, seed: int | float | str | bytes | bytearray | None = None) -> Self:
         """Create a `Color` with random hue."""
         rand = random if seed is None else random.Random(seed)
         return cls.from_hsv(rand.random(), 1, 1)
+
+
+Color.none = Color(0)
