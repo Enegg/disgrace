@@ -154,6 +154,8 @@ class Embed(msgspec.Struct, frozen=True, kw_only=True):
     fields: abc.Sequence[Field] = ()
 
     def to_struct(self) -> embed.RawEmbed:
+        if __debug__:
+            self.validate()
         return embed.RawEmbed(
             title=self.title or msgspec.UNSET,
             description=self.description or msgspec.UNSET,
@@ -171,37 +173,35 @@ class Embed(msgspec.Struct, frozen=True, kw_only=True):
             fields=[field.to_struct() for field in self.fields],
         )
 
-    def raise_on_oversize(self) -> None:
+    def validate(self) -> None:
         fields: list[str] = []
 
-        title = len(self.title)
-        description = len(self.description)
         footer_text = 0 if self.footer is None else len(self.footer.text)
         author_name = 0 if self.author is None else len(self.author.name)
 
-        if title > EmbedLimits.title:
-            fields.append(f"title ({title} > {EmbedLimits.title})")
-        if description > EmbedLimits.description:
-            fields.append(f"description ({description} > {EmbedLimits.description})")
-        if footer_text > EmbedLimits.footer_text:
-            fields.append(f"footer.text ({footer_text} > {EmbedLimits.footer_text})")
-        if author_name > EmbedLimits.author_name:
-            fields.append(f"author.name ({author_name} > {EmbedLimits.author_name})")
+        if len(self.title) > EmbedLimits.title:
+            fields.append(f"{len(self.title)=} (> {EmbedLimits.title})")
+        if len(self.description) > EmbedLimits.description:
+            fields.append(f"{len(self.description)=} (> {EmbedLimits.description})")
+        if self.footer is not None and footer_text > EmbedLimits.footer_text:
+            fields.append(f"{len(self.footer.text)=} (> {EmbedLimits.footer_text})")
+        if self.author is not None and author_name > EmbedLimits.author_name:
+            fields.append(f"{len(self.author.name)=} (> {EmbedLimits.author_name})")
 
-        total = title + description + footer_text + author_name
+        total = len(self.title) + len(self.description) + footer_text + author_name
         for i, field in enumerate(self.fields):
             field_name, field_value = len(field.name), len(field.value)
             total += field_name + field_value
             if field_name > EmbedLimits.field_name:
                 fields.append(
-                    f"fields[{i}].name ({field_name} > {EmbedLimits.field_name})"
+                    f"len(self.fields[{i}].name)={field_name} (> {EmbedLimits.field_name})"  # noqa: E501
                 )
             if field_value > EmbedLimits.field_value:
                 fields.append(
-                    f"fields[{i}].value ({field_value} > {EmbedLimits.field_value})"
+                    f"len(self.fields[{i}].value)={field_value} (> {EmbedLimits.field_value})"  # noqa: E501
                 )
         if total > EmbedLimits.total:
-            fields.append(f"total ({total} > {EmbedLimits.total})")
+            fields.append(f"total={total} (> {EmbedLimits.total})")
 
         if fields:
             text = f"Embed exceeds size limits:\n{'\n'.join(fields)}"

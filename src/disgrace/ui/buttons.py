@@ -4,6 +4,8 @@ import msgspec
 
 import disgrace.abc
 from disgrace import ids
+from disgrace.limits import ComponentLimits
+from disgrace.models.common import cast_str_id
 from disgrace.structs import components
 
 from .enums import ButtonStyle
@@ -22,13 +24,15 @@ type ActionButtonStyle = Literal[
 class ActionButton(msgspec.Struct, kw_only=True):
     """A UI button that emits an interaction."""
 
+    custom_id: str
     style: ActionButtonStyle = ButtonStyle.secondary
     label: str = ""
-    emoji: disgrace.abc.Emoji | None = None
-    custom_id: str
+    emoji: disgrace.abc.PartialEmoji | None = None
     disabled: bool = False
 
     def to_struct(self) -> components.RawButton:
+        if __debug__:
+            self.validate()
         return components.RawButton(
             style=self.style.value,
             label=self.label or msgspec.UNSET,
@@ -37,16 +41,30 @@ class ActionButton(msgspec.Struct, kw_only=True):
             disabled=self.disabled,
         )
 
+    def validate(self) -> None:
+        fields: list[str] = []
+        # fmt: off
+        if len(self.custom_id) > ComponentLimits.custom_id:
+            fields.append(f"{len(self.custom_id)=} (> {ComponentLimits.custom_id})")
+        if len(self.label) > ComponentLimits.button_label:
+            fields.append(f"{len(self.label)=} (> {ComponentLimits.button_label})")
+        # fmt: on
+        if fields:
+            msg = f"Invalid values in {self!r}:\n{'\n'.join(fields)}"
+            raise ValueError(msg)
+
 
 class LinkButton(msgspec.Struct, kw_only=True):
     """A UI button that links to a URL."""
 
-    label: str = ""
-    emoji: disgrace.abc.Emoji | None = None
     url: str
+    label: str = ""
+    emoji: disgrace.abc.PartialEmoji | None = None
     disabled: bool = False
 
     def to_struct(self) -> components.RawButton:
+        if __debug__:
+            self.validate()
         return components.RawButton(
             style=ButtonStyle.link.value,
             label=self.label or msgspec.UNSET,
@@ -54,6 +72,16 @@ class LinkButton(msgspec.Struct, kw_only=True):
             url=self.url,
             disabled=self.disabled,
         )
+
+    def validate(self) -> None:
+        fields: list[str] = []
+        # fmt: off
+        if len(self.label) > ComponentLimits.button_label:
+            fields.append(f"{len(self.label)=} (> {ComponentLimits.button_label})")
+        # fmt: on
+        if fields:
+            msg = f"Invalid values in {self!r}:\n{'\n'.join(fields)}"
+            raise ValueError(msg)
 
 
 class PremiumButton(msgspec.Struct, kw_only=True):
@@ -65,6 +93,6 @@ class PremiumButton(msgspec.Struct, kw_only=True):
     def to_struct(self) -> components.RawButton:
         return components.RawButton(
             style=ButtonStyle.premium.value,
-            sku_id=self.sku_id,
+            sku_id=cast_str_id(self.sku_id),
             disabled=self.disabled,
         )

@@ -3,7 +3,7 @@ from typing import Literal
 
 import msgspec
 
-from disgrace import ids
+from . import raw_ids
 
 type RawStickerType = Literal[
     1,  # standard
@@ -18,31 +18,31 @@ type RawStickerFormatType = Literal[
 
 
 class RawSticker(msgspec.Struct, kw_only=True):
-    id: ids.StickerId
-    pack_id: ids.StickerPackId | msgspec.UnsetType = msgspec.UNSET
+    id: raw_ids.StickerId
+    pack_id: raw_ids.StickerPackId | msgspec.UnsetType = msgspec.UNSET
     name: str
     description: str | None
     tags: str
     type: RawStickerType
     format_type: RawStickerFormatType
     available: bool = True
-    guild_id: ids.GuildId | msgspec.UnsetType = msgspec.UNSET
+    guild_id: raw_ids.GuildId | msgspec.UnsetType = msgspec.UNSET
     sort_value: int | msgspec.UnsetType = msgspec.UNSET
 
 
 class RawStickerItem(msgspec.Struct, kw_only=True):
-    id: ids.StickerId
+    id: raw_ids.StickerId
     name: str
     format_type: RawStickerFormatType
 
 
 class RawStickerPack(msgspec.Struct, kw_only=True):
-    id: ids.StickerPackId
+    id: raw_ids.StickerPackId
     stickers: abc.Sequence[RawSticker]
     name: str
-    sku_id: ids.SkuId
-    cover_sticker_id: ids.StickerId | msgspec.UnsetType = msgspec.UNSET
+    sku_id: raw_ids.SkuId
+    cover_sticker_id: raw_ids.StickerId | msgspec.UnsetType = msgspec.UNSET
     description: str
-    banner_asset_id: ids.SnowflakeId | msgspec.UnsetType = msgspec.UNSET
+    banner_asset_id: raw_ids.SnowflakeId | msgspec.UnsetType = msgspec.UNSET
     # TODO: figure what Snowflake this is about
     # "id of the sticker pack's banner image"

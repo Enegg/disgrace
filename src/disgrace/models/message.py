@@ -97,3 +97,8 @@ class WebhookMessage(msgspec.Struct, kw_only=True):
     author: disgrace.abc.WebhookUser
 
     webhook_id: ids.WebhookId
+
+
+class InteractionMessage(msgspec.Struct, kw_only=True):
+    id: ids.MessageId
+    channel_id: ids.ChannelId

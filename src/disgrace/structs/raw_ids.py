@@ -1,6 +1,6 @@
 from typing import NewType
 
-SnowflakeId = NewType("SnowflakeId", int)
+SnowflakeId = NewType("SnowflakeId", str)
 ChannelId = NewType("ChannelId", SnowflakeId)
 GuildId = NewType("GuildId", SnowflakeId)
 SkuId = NewType("SkuId", SnowflakeId)

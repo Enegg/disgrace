@@ -5,7 +5,10 @@ import msgspec
 
 import disgrace.abc
 from disgrace import ids
+from disgrace.asset import Asset, StaticOrGif
 from disgrace.structs import emoji
+
+from .common import cast_str_id, created_at
 
 # TODO: cache unicode emojis?
 _UNICODE_EMOJI_TABLE: abc.Mapping[str, "UnicodeEmoji"] = {}
@@ -57,6 +60,7 @@ class GuildEmoji(disgrace.abc.Mentionable, msgspec.Struct):
 
     __eq__ = disgrace.abc.Snowflake[ids.GuildEmojiId].__eq__
     __hash__ = disgrace.abc.Snowflake[ids.GuildEmojiId].__hash__
+    created_at = created_at
 
     @property
     @override
@@ -66,7 +70,12 @@ class GuildEmoji(disgrace.abc.Mentionable, msgspec.Struct):
         return f"<:{self.name}:{self.id}>"
 
     def to_partial(self) -> emoji.RawPartialEmoji:
-        return emoji.RawPartialEmoji(id=self.id, name=self.name, animated=self.animated)
+        return emoji.RawPartialEmoji(
+            id=cast_str_id(self.id), name=self.name, animated=self.animated
+        )
+
+    def to_asset(self) -> Asset[StaticOrGif]:
+        return Asset.from_emoji(self.id, self.animated)
 
 
 class AppEmoji(disgrace.abc.Mentionable, msgspec.Struct):
@@ -88,6 +97,7 @@ class AppEmoji(disgrace.abc.Mentionable, msgspec.Struct):
 
     __eq__ = disgrace.abc.Snowflake[ids.AppEmojiId].__eq__
     __hash__ = disgrace.abc.Snowflake[ids.AppEmojiId].__hash__
+    created_at = created_at
 
     @property
     @override
@@ -97,16 +107,9 @@ class AppEmoji(disgrace.abc.Mentionable, msgspec.Struct):
         return f"<:{self.name}:{self.id}>"
 
     def to_partial(self) -> emoji.RawPartialEmoji:
-        return emoji.RawPartialEmoji(id=self.id, name=self.name, animated=self.animated)
+        return emoji.RawPartialEmoji(
+            id=cast_str_id(self.id), name=self.name, animated=self.animated
+        )
 
-
-if True:
-
-    def assert_assignable(
-        unicode: UnicodeEmoji, guild: GuildEmoji, app: AppEmoji
-    ) -> None:
-        _1: disgrace.abc.Emoji[None] = unicode
-        _2: disgrace.abc.Emoji[ids.GuildEmojiId] = guild
-        _3: disgrace.abc.Emoji[ids.AppEmojiId] = app
-        _4: disgrace.abc.Snowflake[ids.GuildEmojiId] = guild
-        _5: disgrace.abc.Snowflake[ids.AppEmojiId] = app
+    def to_asset(self) -> Asset[StaticOrGif]:
+        return Asset.from_emoji(self.id, self.animated)

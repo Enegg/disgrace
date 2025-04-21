@@ -2,7 +2,7 @@ import msgspec
 
 from disgrace import ids
 
-from .misc import BaseStruct, Bitset
+from .misc import BaseStruct, StrBitset
 
 
 class RawRoleTags(BaseStruct, kw_only=True):
@@ -23,7 +23,7 @@ class RawRole(BaseStruct, kw_only=True):
     icon: str | None = None
     unicode_emoji: str | None = None
     position: int
-    permissions: Bitset
+    permissions: StrBitset
     managed: bool
     mentionable: bool
     tags: RawRoleTags | msgspec.UnsetType = msgspec.UNSET

@@ -11,6 +11,8 @@ type Poll = object  # TODO: Polls
 
 
 class Messageable(Protocol):
+    __slots__ = ()
+
     def send(
         self,
         content: str | None = None,

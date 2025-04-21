@@ -3,8 +3,7 @@ from typing import Literal
 
 import msgspec
 
-from disgrace import ids
-
+from . import raw_ids
 from .channel import RawChannelType
 from .components import RawMessageActionRow
 from .embed import RawEmbed
@@ -55,14 +54,14 @@ type RawMessageType = Literal[
 
 
 class RawChannelMention(msgspec.Struct, kw_only=True):
-    id: ids.ChannelId
-    guild_id: ids.GuildId
+    id: raw_ids.ChannelId
+    guild_id: raw_ids.GuildId
     type: RawChannelType
     name: str
 
 
 class RawAttachment(msgspec.Struct, kw_only=True):
-    id: ids.AttachmentId
+    id: raw_ids.AttachmentId
     filename: str
     title: str | msgspec.UnsetType = msgspec.UNSET
     description: str | msgspec.UnsetType = msgspec.UNSET
@@ -70,8 +69,8 @@ class RawAttachment(msgspec.Struct, kw_only=True):
     size: int
     url: str
     proxy_url: str
-    height: int | None | msgspec.UnsetType = msgspec.UNSET
-    width: int | None | msgspec.UnsetType = msgspec.UNSET
+    height: int | None = None
+    width: int | None = None
     ephemeral: bool = False
     duration_secs: float | msgspec.UnsetType = msgspec.UNSET
     waveform: str | msgspec.UnsetType = msgspec.UNSET
@@ -79,8 +78,8 @@ class RawAttachment(msgspec.Struct, kw_only=True):
 
 
 class RawMessage(msgspec.Struct, kw_only=True):
-    id: ids.MessageId
-    channel_id: ids.ChannelId
+    id: raw_ids.MessageId
+    channel_id: raw_ids.ChannelId
     author: RawUser
     content: str
     timestamp: ISOTimestamp
@@ -88,18 +87,18 @@ class RawMessage(msgspec.Struct, kw_only=True):
     tts: bool
     mention_everyone: bool
     mentions: abc.Sequence[RawUser]
-    mention_roles: abc.Sequence[ids.RoleId]
+    mention_roles: abc.Sequence[raw_ids.RoleId]
     mention_channels: abc.Sequence[RawChannelMention] | msgspec.UnsetType = msgspec.UNSET
     attachments: abc.Sequence[RawAttachment]
     embeds: abc.Sequence[RawEmbed]
     reactions: abc.Sequence[RawReaction] | msgspec.UnsetType = msgspec.UNSET
     nonce: int | str | msgspec.UnsetType = msgspec.UNSET
     pinned: bool
-    webhook_id: ids.WebhookId | msgspec.UnsetType = msgspec.UNSET
+    webhook_id: raw_ids.WebhookId | msgspec.UnsetType = msgspec.UNSET
     type: RawMessageType
     # activity?
     # application?
-    application_id: ids.ApplicationId | msgspec.UnsetType = msgspec.UNSET
+    application_id: raw_ids.ApplicationId | msgspec.UnsetType = msgspec.UNSET
     flags: int = 0
     # message_reference?
     # message_snapshots?

@@ -3,9 +3,8 @@ from typing import Literal
 
 import msgspec
 
-from disgrace import ids
-
-from .guild import RawGuildMember
+from . import raw_ids
+from .guild import RawMember
 from .misc import ISOTimestamp
 from .user import RawUser
 
@@ -33,7 +32,7 @@ type RawAutoArchiveDuration = Literal[
 
 
 class RawOverwrite(msgspec.Struct, kw_only=True):
-    id: ids.RoleId | ids.UserId
+    id: raw_ids.RoleId | raw_ids.UserId
     type: Literal[0, 1]
     allow: str
     deny: str
@@ -49,45 +48,45 @@ class RawThreadMetadata(msgspec.Struct, kw_only=True):
 
 
 class RawThreadMember(msgspec.Struct, kw_only=True):
-    id: ids.ChannelId | msgspec.UnsetType = msgspec.UNSET
-    user_id: ids.UserId | msgspec.UnsetType = msgspec.UNSET
+    id: raw_ids.ChannelId | msgspec.UnsetType = msgspec.UNSET
+    user_id: raw_ids.UserId | msgspec.UnsetType = msgspec.UNSET
     join_timestamp: ISOTimestamp
     flags: int
-    member: RawGuildMember | msgspec.UnsetType = msgspec.UNSET
+    member: RawMember | msgspec.UnsetType = msgspec.UNSET
 
 
 class RawForumTag(msgspec.Struct, kw_only=True):
-    id: ids.SnowflakeId
+    id: raw_ids.SnowflakeId
     name: str
     moderated: bool
-    emoji_id: ids.GuildEmojiId | None = None
+    emoji_id: raw_ids.GuildEmojiId | None = None
     emoji_name: str | None = None
 
 
 class RawDefaultReaction(msgspec.Struct, kw_only=True):
-    emoji_id: ids.GuildEmojiId | None = None
+    emoji_id: raw_ids.GuildEmojiId | None = None
     emoji_name: str | None = None
 
 
 class RawChannel(msgspec.Struct, kw_only=True):
-    id: ids.ChannelId
+    id: raw_ids.ChannelId
     type: RawChannelType
-    guild_id: ids.GuildId | msgspec.UnsetType = msgspec.UNSET
+    guild_id: raw_ids.GuildId | msgspec.UnsetType = msgspec.UNSET
     position: int | msgspec.UnsetType = msgspec.UNSET
     permission_overwrites: abc.Sequence[RawOverwrite] | msgspec.UnsetType = msgspec.UNSET
     name: str | None = None
     topic: str | None = None
     nsfw: bool = False
-    last_message_id: ids.MessageId | None = None
+    last_message_id: raw_ids.MessageId | None = None
     bitrate: int | msgspec.UnsetType = msgspec.UNSET
     user_limit: int | msgspec.UnsetType = msgspec.UNSET
     rate_limit_per_user: int | msgspec.UnsetType = msgspec.UNSET
     recipients: abc.Sequence[RawUser] | msgspec.UnsetType = msgspec.UNSET
     icon: str | None = None
-    owner_id: ids.UserId | msgspec.UnsetType = msgspec.UNSET
-    application_id: ids.ApplicationId | msgspec.UnsetType = msgspec.UNSET
+    owner_id: raw_ids.UserId | msgspec.UnsetType = msgspec.UNSET
+    application_id: raw_ids.ApplicationId | msgspec.UnsetType = msgspec.UNSET
     managed: bool = False
-    parent_id: ids.ChannelId | None = None
+    parent_id: raw_ids.ChannelId | None = None
     last_pin_timestamp: str | None = None
     rtc_region: str | None = None
     video_quality_mode: int = 1
@@ -100,7 +99,7 @@ class RawChannel(msgspec.Struct, kw_only=True):
     flags: int = 0
     total_message_sent: int | msgspec.UnsetType = msgspec.UNSET
     available_tags: abc.Sequence[RawForumTag] | msgspec.UnsetType = msgspec.UNSET
-    applied_tags: abc.Sequence[ids.SnowflakeId] | msgspec.UnsetType = msgspec.UNSET
+    applied_tags: abc.Sequence[raw_ids.SnowflakeId] | msgspec.UnsetType = msgspec.UNSET
     default_reaction_emoji: RawDefaultReaction | None = None
     default_thread_rate_limit_per_user: int | msgspec.UnsetType = msgspec.UNSET
     default_sort_order: int | None = None

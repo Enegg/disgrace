@@ -3,10 +3,10 @@ from typing import Literal
 
 import msgspec
 
-from disgrace import ids
-
+from . import raw_ids
 from .channel import RawChannelType
 from .emoji import RawPartialEmoji
+from .misc import BaseStruct
 
 type RawComponentType = Literal[
     1,  # Action Row
@@ -41,7 +41,7 @@ type RawMessageComponent = RawButton | AnyRawSelect
 type RawModalComponent = RawTextInput
 
 
-class BaseComponent(msgspec.Struct, omit_defaults=True, tag_field="type"): ...
+class BaseComponent(BaseStruct, tag_field="type"): ...
 
 
 class RawMessageActionRow(BaseComponent, tag=1, kw_only=True):
@@ -58,13 +58,13 @@ class RawButton(BaseComponent, tag=2, kw_only=True):
     label: str | msgspec.UnsetType = msgspec.UNSET
     emoji: RawPartialEmoji | msgspec.UnsetType = msgspec.UNSET
     custom_id: str | msgspec.UnsetType = msgspec.UNSET
-    sku_id: ids.SkuId | msgspec.UnsetType = msgspec.UNSET
+    sku_id: raw_ids.SkuId | msgspec.UnsetType = msgspec.UNSET
     url: str | msgspec.UnsetType = msgspec.UNSET
     disabled: bool = False
 
 
 # --------------------------------------- selects ----------------------------------------
-class RawSelectOption(msgspec.Struct, omit_defaults=True, kw_only=True):
+class RawSelectOption(BaseStruct, kw_only=True):
     label: str
     value: str
     description: str | msgspec.UnsetType = msgspec.UNSET
@@ -81,16 +81,16 @@ class RawStringSelect(BaseComponent, tag=3, kw_only=True):
     disabled: bool = False
 
 
-class RawSelectDefaultUserValue(msgspec.Struct, omit_defaults=True, tag="user"):
-    id: ids.UserId
+class RawSelectDefaultUserValue(BaseStruct, tag="user"):
+    id: raw_ids.UserId
 
 
-class RawSelectDefaultRoleValue(msgspec.Struct, omit_defaults=True, tag="role"):
-    id: ids.RoleId
+class RawSelectDefaultRoleValue(BaseStruct, tag="role"):
+    id: raw_ids.RoleId
 
 
-class RawSelectDefaultChannelValue(msgspec.Struct, omit_defaults=True, tag="channel"):
-    id: ids.ChannelId
+class RawSelectDefaultChannelValue(BaseStruct, tag="channel"):
+    id: raw_ids.ChannelId
 
 
 class RawUserSelect(BaseComponent, tag=5, kw_only=True):

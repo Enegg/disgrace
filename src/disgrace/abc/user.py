@@ -1,11 +1,14 @@
 from typing import Protocol
 
 from disgrace import ids
+from disgrace.asset import Asset, StaticOrGif
 
 from .structural import Snowflake
 
 
 class User(Snowflake[ids.UserId], Protocol):
+    __slots__ = ()
+
     @property
     def username(self) -> str: ...
     @property
@@ -13,7 +16,7 @@ class User(Snowflake[ids.UserId], Protocol):
     @property
     def global_name(self) -> str | None: ...
     @property
-    def avatar(self) -> str | None: ...
+    def avatar(self) -> Asset[StaticOrGif] | None: ...
     @property
     def bot(self) -> bool: ...
     @property
@@ -21,6 +24,8 @@ class User(Snowflake[ids.UserId], Protocol):
 
 
 class WebhookUser(Snowflake[ids.WebhookId], Protocol):
+    __slots__ = ()
+
     @property
     def username(self) -> str: ...
     @property
@@ -28,7 +33,7 @@ class WebhookUser(Snowflake[ids.WebhookId], Protocol):
     @property
     def global_name(self) -> str | None: ...
     @property
-    def avatar(self) -> str | None: ...
+    def avatar(self) -> Asset[StaticOrGif] | None: ...
     @property
     def bot(self) -> bool: ...
     @property

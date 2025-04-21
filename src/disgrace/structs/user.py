@@ -2,7 +2,7 @@ from typing import Literal
 
 import msgspec
 
-from disgrace import ids
+from . import raw_ids
 
 type RawPremiumType = Literal[
     0,  # None
@@ -13,7 +13,7 @@ type RawPremiumType = Literal[
 
 class RawAvatarDecorationData(msgspec.Struct, kw_only=True):
     asset: str
-    sku_id: ids.SkuId
+    sku_id: raw_ids.SkuId
 
 
 # TODO: class RawConnection
@@ -21,20 +21,20 @@ class RawAvatarDecorationData(msgspec.Struct, kw_only=True):
 
 
 class RawUser(msgspec.Struct, kw_only=True):
-    id: ids.UserId
+    id: raw_ids.UserId
     username: str
     discriminator: str
     global_name: str | None
     avatar: str | None
-    bot: bool | msgspec.UnsetType = msgspec.UNSET
-    system: bool | msgspec.UnsetType = msgspec.UNSET
-    mfa_enabled: bool | msgspec.UnsetType = msgspec.UNSET
-    banner: str | None | msgspec.UnsetType = msgspec.UNSET
-    accent_color: int | None | msgspec.UnsetType = msgspec.UNSET
+    bot: bool = False
+    system: bool = False
+    mfa_enabled: bool = False
+    banner: str | None = None
+    accent_color: int | None = None
     locale: str | msgspec.UnsetType = msgspec.UNSET
-    verified: bool | msgspec.UnsetType = msgspec.UNSET
-    # email?: ?str
-    flags: int | msgspec.UnsetType = msgspec.UNSET
-    premium_type: RawPremiumType | msgspec.UnsetType = msgspec.UNSET
+    verified: bool = False
+    email: str | None = None
+    flags: int = 0
+    premium_type: RawPremiumType = 0
     public_flags: int = 0
     avatar_decoration_data: RawAvatarDecorationData | None = None
