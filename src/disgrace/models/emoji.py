@@ -5,7 +5,7 @@ import msgspec
 
 import disgrace.abc
 from disgrace import ids
-from disgrace.asset import Asset, StaticOrGif
+from disgrace.asset import Asset
 from disgrace.structs import emoji
 
 from .common import cast_str_id, created_at
@@ -46,8 +46,8 @@ class UnicodeEmoji(disgrace.abc.Mentionable, msgspec.Struct):
     def mention(self) -> str:
         return self.name
 
-    def to_partial(self) -> emoji.RawPartialEmoji:
-        return emoji.RawPartialEmoji(id=None, name=self.name)
+    def to_partial(self) -> emoji.PartialEmoji:
+        return emoji.PartialEmoji(id=None, name=self.name)
 
 
 class GuildEmoji(disgrace.abc.Mentionable, msgspec.Struct):
@@ -69,12 +69,12 @@ class GuildEmoji(disgrace.abc.Mentionable, msgspec.Struct):
             return f"<a:{self.name}:{self.id}>"
         return f"<:{self.name}:{self.id}>"
 
-    def to_partial(self) -> emoji.RawPartialEmoji:
-        return emoji.RawPartialEmoji(
+    def to_partial(self) -> emoji.PartialEmoji:
+        return emoji.PartialEmoji(
             id=cast_str_id(self.id), name=self.name, animated=self.animated
         )
 
-    def to_asset(self) -> Asset[StaticOrGif]:
+    def to_asset(self) -> Asset.StaticOrGifAsset:
         return Asset.from_emoji(self.id, self.animated)
 
 
@@ -106,10 +106,10 @@ class AppEmoji(disgrace.abc.Mentionable, msgspec.Struct):
             return f"<a:{self.name}:{self.id}>"
         return f"<:{self.name}:{self.id}>"
 
-    def to_partial(self) -> emoji.RawPartialEmoji:
-        return emoji.RawPartialEmoji(
+    def to_partial(self) -> emoji.PartialEmoji:
+        return emoji.PartialEmoji(
             id=cast_str_id(self.id), name=self.name, animated=self.animated
         )
 
-    def to_asset(self) -> Asset[StaticOrGif]:
+    def to_asset(self) -> Asset.StaticOrGifAsset:
         return Asset.from_emoji(self.id, self.animated)

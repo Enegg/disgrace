@@ -8,7 +8,7 @@ from .misc import BaseStruct
 from .user import RawUser
 
 
-class RawPartialEmoji(BaseStruct, kw_only=True):
+class PartialEmoji(BaseStruct, kw_only=True):
     id: raw_ids.AppEmojiId | raw_ids.GuildEmojiId | None
     name: str
     animated: bool = False

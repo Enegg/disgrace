@@ -30,6 +30,8 @@ class MessageFlags(enum.Flag):
     """Message is a voice message."""
     has_snapshot = 1 << 14
     """Message has a snapshot (via Message Forwarding)."""
+    is_components_v2 = 1 << 15
+    """Message is composed from components v2."""
 
     silent = suppress_notifications
     """Alias for `.suppress_notifications`."""

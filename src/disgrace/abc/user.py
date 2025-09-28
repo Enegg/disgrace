@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from disgrace import ids
-from disgrace.asset import Asset, StaticOrGif
+from disgrace.asset import Asset
 
 from .structural import Snowflake
 
@@ -16,7 +16,7 @@ class User(Snowflake[ids.UserId], Protocol):
     @property
     def global_name(self) -> str | None: ...
     @property
-    def avatar(self) -> Asset[StaticOrGif] | None: ...
+    def avatar(self) -> Asset.StaticOrGifAsset | None: ...
     @property
     def bot(self) -> bool: ...
     @property
@@ -33,7 +33,7 @@ class WebhookUser(Snowflake[ids.WebhookId], Protocol):
     @property
     def global_name(self) -> str | None: ...
     @property
-    def avatar(self) -> Asset[StaticOrGif] | None: ...
+    def avatar(self) -> Asset.StaticOrGifAsset | None: ...
     @property
     def bot(self) -> bool: ...
     @property

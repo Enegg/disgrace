@@ -1,11 +1,12 @@
 from collections import abc
 from typing import Protocol
 
+from disgrace import ui
+from disgrace.allowed_mentions import AllowedMentions
 from disgrace.file import FileResource
 from disgrace.flags import MessageFlags
 from disgrace.models.embed import Embed
 
-type Component = object  # TODO: Components
 type Sticker = object  # TODO: Stickers
 type Poll = object  # TODO: Polls
 
@@ -21,7 +22,18 @@ class Messageable(Protocol):
         files: FileResource | abc.Sequence[FileResource] = (),
         stickers: abc.Sequence[Sticker] = (),
         flags: MessageFlags = MessageFlags.none,
-        allowed_mentions: ... = ...,
-        components: abc.Sequence[Component] = (),
+        allowed_mentions: AllowedMentions | None = None,
+        components: ui.MessageComponents = (),
         poll: Poll | None = None,
     ) -> abc.Awaitable[None]: ...  # TODO
+
+
+class MessageableV2(Protocol):
+    __slots__ = ()
+
+    def send_components(
+        self,
+        components: ui.TopLevelMessageComponent,
+        *,
+        allowed_mentions: AllowedMentions | None = None,
+    ) -> abc.Awaitable[None]: ...

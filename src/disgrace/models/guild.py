@@ -5,7 +5,7 @@ import msgspec
 
 import disgrace.abc
 from disgrace import ids
-from disgrace.asset import Asset, StaticFormat, StaticOrGif
+from disgrace.asset import Asset
 from disgrace.enums import Locale
 from disgrace.models.common import created_at
 
@@ -38,9 +38,9 @@ class IncidentsData(msgspec.Struct, kw_only=True):
 class Guild(msgspec.Struct, kw_only=True):
     id: ids.GuildId
     name: str
-    icon: Asset[StaticOrGif] | None = None
-    splash: Asset[StaticFormat] | None = None
-    discovery_splash: Asset[StaticFormat] | None = None
+    icon: Asset.StaticOrGifAsset | None = None
+    splash: Asset.StaticAsset | None = None
+    discovery_splash: Asset.StaticAsset | None = None
     owner_id: ids.UserId
     # permissions
     afk_channel_id: ids.ChannelId | None = None
@@ -62,7 +62,7 @@ class Guild(msgspec.Struct, kw_only=True):
     max_members: int = 0
     vanity_url_code: str | None = None
     description: str | None = None
-    banner: Asset[StaticOrGif] | None = None
+    banner: Asset.StaticOrGifAsset | None = None
     premium_tier: int = 0
     premium_subscription_count: int = 0
     preferred_locale: Locale = Locale.en_US

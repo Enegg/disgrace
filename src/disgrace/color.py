@@ -14,10 +14,11 @@ class Color:
     none: ClassVar[Self]
     """Special value denoting lack of color."""
     value: int
+    """The raw color value."""
 
     @property
     def red(self) -> int:
-        return self.value >> 16 & 0xFF
+        return (self.value >> 16) & 0xFF
 
     @property
     def green(self) -> int:
@@ -26,9 +27,6 @@ class Color:
     @property
     def blue(self) -> int:
         return self.value & 0xFF
-
-    def __bool__(self) -> bool:
-        return bool(self.value)
 
     def to_rgb(self) -> tuple[int, int, int]:
         return (self.red, self.green, self.blue)

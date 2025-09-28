@@ -83,6 +83,11 @@ exempt-modules = ["typing", "typing_extensions"]
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "format", "input", "type"]
 
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+    "typing.cast"
+]
+
 [tool.ruff.lint.pylint]
 allow-dunder-method-names = [
     "__attrs_pre_init__ ",

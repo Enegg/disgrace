@@ -4,7 +4,7 @@ import msgspec
 
 import disgrace.abc
 from disgrace import ids
-from disgrace.asset import Asset, Png, StaticOrGif
+from disgrace.asset import Asset
 from disgrace.color import Color
 from disgrace.enums import Locale, UserPremiumType
 from disgrace.flags import UserFlags
@@ -13,7 +13,7 @@ from .common import created_at
 
 
 class AvatarDecoration(msgspec.Struct, kw_only=True):
-    asset: Asset[Png]
+    asset: Asset.PngAsset
     sku_id: ids.SkuId
 
 
@@ -24,11 +24,11 @@ class User(disgrace.abc.Mentionable, msgspec.Struct, kw_only=True):
     username: str
     discriminator: str = "0"
     global_name: str | None = None
-    avatar: Asset[StaticOrGif] | None = None
+    avatar: Asset.StaticOrGifAsset | None = None
     bot: bool = False
     system: bool = False
     mfa_enabled: bool = False
-    banner: Asset[StaticOrGif] | None = None
+    banner: Asset.StaticOrGifAsset | None = None
     accent_color: Color = Color.none
     locale: Locale = Locale.en_US
     verified: bool = False

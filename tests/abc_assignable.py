@@ -26,9 +26,9 @@ def assert_assignable(
     _3: disgrace.abc.Emoji[ids.AppEmojiId] = app_emoji
     _4: disgrace.abc.Snowflake[ids.GuildEmojiId] = guild_emoji
     _5: disgrace.abc.Snowflake[ids.AppEmojiId] = app_emoji
-    _6: disgrace.abc.Partible[emoji.RawPartialEmoji] = unicode_emoji
-    _7: disgrace.abc.Partible[emoji.RawPartialEmoji] = guild_emoji
-    _8: disgrace.abc.Partible[emoji.RawPartialEmoji] = app_emoji
+    _6: disgrace.abc.Partible[emoji.PartialEmoji] = unicode_emoji
+    _7: disgrace.abc.Partible[emoji.PartialEmoji] = guild_emoji
+    _8: disgrace.abc.Partible[emoji.PartialEmoji] = app_emoji
 
     # components
     _ = ActionButton(emoji=unicode_emoji, custom_id="")

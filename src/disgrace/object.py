@@ -23,7 +23,7 @@ class Object[IdT: ids.SnowflakeId = ids.SnowflakeId]:
 
     if TYPE_CHECKING:
 
-        def __init__(self, id: IdT | SupportsIntCast) -> None: ...
+        def __init__(self, id: IdT | SupportsIntCast, /) -> None: ...
 
     @classmethod
     def from_timestamp(cls, ts_ms: int | datetime.datetime, /) -> Self:

@@ -9,7 +9,7 @@ type AnyEmojiId = ids.AppEmojiId | ids.GuildEmojiId | None
 
 
 class PartialEmoji[IdT: AnyEmojiId = AnyEmojiId](
-    HasId[IdT], Partible[emoji.RawPartialEmoji], Protocol
+    HasId[IdT], Partible[emoji.PartialEmoji], Protocol
 ):
     __slots__ = ()
 
@@ -20,7 +20,7 @@ class PartialEmoji[IdT: AnyEmojiId = AnyEmojiId](
 
 
 class Emoji[IdT: AnyEmojiId = AnyEmojiId](
-    HasId[IdT], Mentionable, Partible[emoji.RawPartialEmoji], Protocol
+    HasId[IdT], Mentionable, Partible[emoji.PartialEmoji], Protocol
 ):
     __slots__ = ()
 

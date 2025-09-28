@@ -1,32 +1,58 @@
 from collections import abc
 
-from .buttons import ActionButton, LinkButton, PremiumButton
-from .enums import ButtonStyle, TextInputStyle
-from .modals import TextInput
+from disgrace.structs.components import (
+    ButtonStyleNS,
+    File,
+    MediaGallery,
+    MediaGalleryItem,
+    Separator,
+    TextDisplay,
+    TextInputStyleNS,
+    Thumbnail,
+    UnfurledMediaItem,
+)
+
+from .buttons import ActionButton, AnyButton, LinkButton, PremiumButton
+from .layout import ActionRow, Container, Section
+from .modals import Label, TextInput
 from .selects import (
+    AnySelect,
     ChannelSelect,
     MentionableSelect,
     RoleSelect,
+    SelectOption,
     StringSelect,
     UserSelect,
 )
 
 __all__ = (
     "ActionButton",
-    "ButtonStyle",
+    "ActionRow",
+    "ButtonStyleNS",
     "ChannelSelect",
+    "Container",
+    "File",
+    "Label",
     "LinkButton",
+    "MediaGallery",
+    "MediaGalleryItem",
     "MentionableSelect",
     "PremiumButton",
     "RoleSelect",
+    "Section",
+    "SelectOption",
+    "Separator",
+    "StringSelect",
+    "TextDisplay",
     "TextInput",
-    "TextInputStyle",
+    "TextInputStyleNS",
+    "Thumbnail",
+    "TopLevelMessageComponent",
+    "UnfurledMediaItem",
     "UserSelect",
 )
 
-type AnyButton = ActionButton | LinkButton | PremiumButton
-type AnySelect = (
-    StringSelect | UserSelect | RoleSelect | MentionableSelect | ChannelSelect
-)
 type MessageComponents = abc.Sequence[abc.Sequence[AnyButton] | AnySelect]
-type ModalComponents = abc.Sequence[TextInput]
+type TopLevelMessageComponent = (
+    ActionRow | Section | TextDisplay | MediaGallery | File | Separator | Container
+)

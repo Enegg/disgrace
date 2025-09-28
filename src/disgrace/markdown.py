@@ -18,32 +18,35 @@ def codeblock(text: str, lang: str = "") -> str:
     return f"```{lang}\n{text}```"
 
 
-type TimestampStyle = Literal["f", "F", "d", "D", "t", "T", "R"]
-
-
-def format_dt(dt: datetime.datetime | float | int, /, style: TimestampStyle = "f") -> str:
-    """Format a `datetime.datetime`, `int` or `float` for presentation within Discord.
+def format_dt(
+    dt: datetime.datetime | float | int,
+    /,
+    style: Literal["f", "F", "d", "D", "t", "T", "R"] = "f",
+) -> str:
+    R"""Format a `datetime.datetime`, `int` or `float` for presentation within Discord.
 
     The exact output depends on the user's locale setting in the client.
     The example output below is using the ``en-GB`` locale.
 
-    +-------------+----------------------------+-----------------+
-    |    Style    |       Example Output       |   Description   |
-    +=============+============================+=================+
-    | t           | 22:57                      | Short Time      |
-    +-------------+----------------------------+-----------------+
-    | T           | 22:57:58                   | Long Time       |
-    +-------------+----------------------------+-----------------+
-    | d           | 17/05/2016                 | Short Date      |
-    +-------------+----------------------------+-----------------+
-    | D           | 17 May 2016                | Long Date       |
-    +-------------+----------------------------+-----------------+
-    | f (default) | 17 May 2016 22:57          | Short Date Time |
-    +-------------+----------------------------+-----------------+
-    | F           | Tuesday, 17 May 2016 22:57 | Long Date Time  |
-    +-------------+----------------------------+-----------------+
-    | R           | 5 years ago                | Relative Time   |
-    +-------------+----------------------------+-----------------+
+    +-------+----------------------------+-----------------+
+    | Style |       Example Output       |   Description   |
+    +=======+============================+=================+
+    | t     | 22:57                      | Short Time      |
+    +-------+----------------------------+-----------------+
+    | T     | 22:57:58                   | Long Time       |
+    +-------+----------------------------+-----------------+
+    | d     | 17/05/2016                 | Short Date      |
+    +-------+----------------------------+-----------------+
+    | D     | 17 May 2016                | Long Date       |
+    +-------+----------------------------+-----------------+
+    | f*    | 17 May 2016 22:57          | Short Date Time |
+    +-------+----------------------------+-----------------+
+    | F     | Tuesday, 17 May 2016 22:57 | Long Date Time  |
+    +-------+----------------------------+-----------------+
+    | R     | 5 years ago                | Relative Time   |
+    +-------+----------------------------+-----------------+
+
+    \* default
 
     Parameters
     ----------

@@ -5,7 +5,7 @@ import msgspec
 
 from . import raw_ids
 from .channel import RawChannelType
-from .components import RawMessageActionRow
+from .components import RawActionRow
 from .embed import RawEmbed
 from .misc import ISOTimestamp
 from .reaction import RawReaction
@@ -106,7 +106,7 @@ class RawMessage(msgspec.Struct, kw_only=True):
     # interaction_metadata?
     # interaction? (deprecated)
     # thread?
-    components: abc.Sequence[RawMessageActionRow] | msgspec.UnsetType = msgspec.UNSET
+    components: abc.Sequence[RawActionRow] | msgspec.UnsetType = msgspec.UNSET
     sticker_items: abc.Sequence[RawStickerItem] | msgspec.UnsetType = msgspec.UNSET
     # position?
     # role_subscription_data?

@@ -2,7 +2,7 @@ from collections import abc
 
 import msgspec
 
-from .emoji import RawPartialEmoji
+from .emoji import PartialEmoji
 
 
 class RawReactionCountDetails(msgspec.Struct, kw_only=True):
@@ -15,5 +15,5 @@ class RawReaction(msgspec.Struct, kw_only=True):
     count_details: RawReactionCountDetails
     me: bool
     me_burst: bool
-    emoji: RawPartialEmoji
+    emoji: PartialEmoji
     burst_colors: abc.Sequence[int]
