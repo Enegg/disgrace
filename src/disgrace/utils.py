@@ -37,7 +37,7 @@ class Range[T: (int, float) = int]:
     def __format__(self, format_spec: str, /) -> str:
         return f"{self.min:{format_spec}}..{self.max:{format_spec}}"
 
-    def __contains__(self, value: T, /) -> bool:
+    def __contains__(self, value: int | float, /) -> bool:
         return self.min <= value <= self.max
 
 

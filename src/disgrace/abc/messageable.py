@@ -3,9 +3,9 @@ from typing import Protocol
 
 from disgrace import ui
 from disgrace.allowed_mentions import AllowedMentions
-from disgrace.file import FileResource
 from disgrace.flags import MessageFlags
 from disgrace.models.embed import Embed
+from disgrace.resource import FileResource
 
 type Sticker = object  # TODO: Stickers
 type Poll = object  # TODO: Polls

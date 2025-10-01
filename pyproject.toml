@@ -72,7 +72,6 @@ section-order = [
     "future",
     "standard-library",
     "third-party",
-    "discord",
     "first-party",
     "local-folder",
 ]

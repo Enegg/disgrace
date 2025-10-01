@@ -1,15 +1,16 @@
 import io
-import os
 import pathlib
 
 import httpx
 import msgspec
 
-type StrPath = str | os.PathLike[str]
+from disgrace._typeshed import Pathish
+
+__all__ = ("FileResource", "MemoryResource", "WebResource")
 
 
 class FileResource(msgspec.Struct):
-    path: StrPath
+    path: Pathish
     filename: str = ""
     spoiler: bool = False
 

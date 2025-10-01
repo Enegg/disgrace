@@ -14,7 +14,7 @@ __all__ = ("AllowedMentions",)
 class AllowedMentions(msgspec.Struct, kw_only=True, omit_defaults=True):
     type LiteralParseValue = Literal["roles", "users", "everyone"]
 
-    parse: abc.Collection[LiteralParseValue] | None = None
+    parse: abc.Collection[LiteralParseValue] | msgspec.UnsetType = msgspec.UNSET
     users: abc.Collection[raw_ids.UserId] = ()
     roles: abc.Collection[raw_ids.RoleId] = ()
     replied_user: bool = False
