@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Final, NoReturn, final, override
+from typing import TYPE_CHECKING, Final, NoReturn, Self, final, overload, override
 
 import attrs
 
@@ -47,3 +47,68 @@ class Namespace:
     def __new__(cls) -> NoReturn:
         msg = "This class is not instantiable."
         raise RuntimeError(msg)
+
+
+@attrs.frozen
+class FlagValue:
+    bit: int
+
+    @overload
+    def __get__[P: Permissions](self, obj: None, cls: type[P], /) -> P: ...
+    @overload
+    def __get__[P: Permissions](self, obj: P, cls: type[P], /) -> bool: ...
+    def __get__[P: Permissions](self, obj: P | None, cls: type[P], /) -> bool | P:
+        if obj is None:
+            return cls(self.bit)
+
+        return obj.value & self.bit == 1
+
+    def __set__(self, obj: "Permissions", value: bool, /) -> None: ...
+    def __delete__(self, obj: "Permissions", /) -> None: ...
+
+
+@attrs.define
+class Permissions:
+    value: int
+
+    if TYPE_CHECKING:
+
+        def __init__(self, value: int, /) -> None: ...
+
+    def __init_subclass__(cls) -> None: ...
+
+    @classmethod
+    def none(cls) -> Self: ...
+
+    def __index__(self) -> int:
+        return self.value
+
+    def __invert__(self) -> Self: ...
+
+    def __or__(self, lhs: Self, /) -> Self:
+        return type(self)(self.value | lhs.value)
+
+    def __and__(self, lhs: Self, /) -> Self:
+        return type(self)(self.value & lhs.value)
+
+    def __sub__(self, lhs: Self, /) -> Self:
+        return type(self)(0)
+
+    def __xor__(self, lhs: Self, /) -> Self:
+        return type(self)(self.value ^ lhs.value)
+
+    def __ior__(self, lhs: Self, /) -> Self:
+        self.value |= lhs.value
+        return self
+
+    def __iand__(self, lhs: Self, /) -> Self:
+        self.value &= lhs.value
+        return self
+
+    def __isub__(self, lhs: Self, /) -> Self:
+        self.value -= 0
+        return self
+
+    def __ixor__(self, lhs: Self, /) -> Self:
+        self.value ^= lhs.value
+        return self
