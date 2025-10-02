@@ -1,19 +1,17 @@
 """Various limits imposed by discord."""
 
-from typing import Final, Never, final
+from typing import Final, final
 
-from disgrace.utils import Range
+from disgrace.utils import Namespace, Range
 
 __all__ = ("ComponentLimits", "EmbedLimits", "InteractionLimits", "MessageLimits")
 
 
 @final
-class EmbedLimits:
+class EmbedLimits(Namespace):
     """Limits imposed on embeds & their sub-components."""
 
     __slots__ = ()
-
-    def __new__(cls) -> Never: ...
 
     title: Final = 256
     """Maximum length of an embed's title."""
@@ -34,12 +32,10 @@ class EmbedLimits:
 
 
 @final
-class MessageLimits:
+class MessageLimits(Namespace):
     """Limits imposed on sending messages."""
 
     __slots__ = ()
-
-    def __new__(cls) -> Never: ...
 
     content: Final = 2000
     """Maximum length of a message's content."""
@@ -54,12 +50,10 @@ class MessageLimits:
 
 
 @final
-class ComponentLimits:
+class ComponentLimits(Namespace):
     """Limits imposed on UI components."""
 
     __slots__ = ()
-
-    def __new__(cls) -> Never: ...
 
     custom_id: Final = 100
     """Maximum length of a component's custom ID."""
@@ -94,12 +88,10 @@ class ComponentLimits:
 
 
 @final
-class InteractionLimits:
+class InteractionLimits(Namespace):
     """Limits imposed on responding to interactions."""
 
     __slots__ = ()
-
-    def __new__(cls) -> Never: ...
 
     autocomplete_options: Final = 25
     """Maximum number of options an autocomplete can return."""
