@@ -73,6 +73,8 @@ class ComponentLimits(Namespace):
     """Maximum length of a SelectOption's value."""
     select_option_description: Final = 100
     """Maximum length of a SelectOption's description."""
+    text_display_content: Final = 4000
+    """Maximum length of a Text Display's content."""
     text_input_value: Final = 4000
     """Maximum length of a TextInput's value."""
     text_input_placeholder: Final = 100
