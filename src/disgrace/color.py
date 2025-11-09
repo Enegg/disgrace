@@ -1,10 +1,14 @@
 import colorsys
 import random
-from typing import ClassVar, Self
+from typing import ClassVar, Protocol, Self
 
 import attrs
 
 __all__ = ("Color",)
+
+
+class RandomGen(Protocol):
+    def random(self) -> float: ...
 
 
 @attrs.frozen
@@ -15,6 +19,9 @@ class Color:
     """Special value denoting lack of color."""
     value: int
     """The raw color value."""
+
+    def __index__(self) -> int:
+        return self.value
 
     @property
     def red(self) -> int:
@@ -49,10 +56,9 @@ class Color:
         return cls(int(value.removeprefix("#").removeprefix("0x"), base=16))
 
     @classmethod
-    def random(cls, *, seed: int | float | str | bytes | bytearray | None = None) -> Self:
+    def random(cls, *, gen: RandomGen = random) -> Self:
         """Create a `Color` with random hue."""
-        rand = random if seed is None else random.Random(seed)
-        return cls.from_hsv(rand.random(), 1, 1)
+        return cls.from_hsv(gen.random(), 1, 1)
 
 
 Color.none = Color(0)
