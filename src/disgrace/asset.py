@@ -52,7 +52,7 @@ class Asset[FmtT: StaticOrGif | Lottie]:
     def from_emoji(
         cls, emoji_id: ids.GuildEmojiId | ids.AppEmojiId, animated: bool = False
     ) -> StaticOrGifAsset:
-        return Asset(url=f"{CDN}/emojis/{emoji_id}", format="gif" if animated else "png")
+        return Asset(url=f"{CDN}/emojis/{emoji_id}", format="gif" if animated else "webp")
 
     @classmethod
     def guild_icon(cls, guild_id: ids.GuildId, guild_icon: str) -> StaticOrGifAsset:
