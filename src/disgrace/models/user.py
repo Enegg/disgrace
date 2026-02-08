@@ -38,8 +38,6 @@ class User(disgrace.abc.Mentionable, msgspec.Struct, kw_only=True):
     public_flags: UserFlags = UserFlags.none
     avatar_decoration: AvatarDecoration | None = None
 
-    __eq__ = disgrace.abc.Snowflake[ids.UserId].__eq__
-    __hash__ = disgrace.abc.Snowflake[ids.UserId].__hash__
     created_at = created_at
 
     def __bool__(self) -> bool:

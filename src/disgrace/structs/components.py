@@ -3,13 +3,13 @@ from typing import Any, ClassVar, Final, Literal, Self, final
 
 import msgspec
 
+from disgrace._msgspec import BaseStruct
 from disgrace.limits import ComponentLimits
 from disgrace.utils import Namespace
 
 from . import raw_ids
 from .channel import RawChannelType
 from .emoji import PartialEmoji
-from .misc import BaseStruct
 
 type ComponentType = Literal[
     1,  # Action Row

@@ -3,8 +3,9 @@ from typing import Self
 
 import msgspec
 
+from disgrace._msgspec import BaseStruct
+
 from . import raw_ids
-from .misc import BaseStruct
 from .user import RawUser
 
 

@@ -3,10 +3,10 @@ from typing import Protocol
 from disgrace import ids
 from disgrace.asset import Asset
 
-from .structural import Snowflake
+from .structural import HasId
 
 
-class User(Snowflake[ids.UserId], Protocol):
+class User(HasId[ids.UserId], Protocol):
     __slots__ = ()
 
     @property
@@ -23,7 +23,7 @@ class User(Snowflake[ids.UserId], Protocol):
     def system(self) -> bool: ...
 
 
-class WebhookUser(Snowflake[ids.WebhookId], Protocol):
+class WebhookUser(HasId[ids.WebhookId], Protocol):
     __slots__ = ()
 
     @property

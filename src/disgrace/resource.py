@@ -8,8 +8,10 @@ from disgrace._typeshed import Pathish
 
 __all__ = ("FileResource", "MemoryResource", "WebResource")
 
+type Resource = FileResource | WebResource | MemoryResource
 
-class FileResource(msgspec.Struct):
+
+class FileResource(msgspec.Struct, kw_only=True):
     path: Pathish
     filename: str = ""
     spoiler: bool = False
@@ -19,7 +21,7 @@ class FileResource(msgspec.Struct):
             self.filename = pathlib.PurePath(self.path).name
 
 
-class WebResource(msgspec.Struct):
+class WebResource(msgspec.Struct, kw_only=True):
     url: str | httpx.URL
     filename: str = ""
 

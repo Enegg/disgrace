@@ -16,24 +16,7 @@ class HasId[IdT](Protocol):
     def id(self) -> IdT: ...
 
 
-class Snowflake[IdT: SnowflakeId](HasId[IdT], Protocol):
-    """A generic, unique discord object. Implements `__eq__`, `__hash__`."""
-
-    __slots__ = ()
-
-    @override
-    def __eq__(self, other: object, /) -> bool:
-        if not isinstance(other, self.__class__):
-            return NotImplemented
-
-        return self.id == other.id
-
-    @override
-    def __hash__(self) -> int:
-        # Snowflake IDs are uint64. Python's ints hash to themselves
-        # up to (1 << 61) - 2, which is 0x...1110
-        # the leading 0 means we effectively have 60 bits to work with
-        return self.id >> 4
+type Snowflake[IdT: SnowflakeId = SnowflakeId] = HasId[IdT]
 
 
 class Mentionable(Protocol):
@@ -55,6 +38,7 @@ class Destructible[StructT: msgspec.Struct | msgspec.UnsetType](Protocol):
 
     __slots__ = ()
 
+    @abstractmethod
     def to_struct(self) -> StructT: ...
 
 
@@ -63,4 +47,5 @@ class Partible[PartialT](Protocol):
 
     __slots__ = ()
 
+    @abstractmethod
     def to_partial(self) -> PartialT: ...

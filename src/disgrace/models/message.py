@@ -10,6 +10,16 @@ from disgrace.flags import AttachmentFlags, MessageFlags
 from disgrace.models.embed import Embed
 
 
+class VisualMedia(msgspec.Struct, kw_only=True):
+    height: int
+    width: int
+
+
+class AudioMedia(msgspec.Struct, kw_only=True):
+    duration_secs: float
+    waveform: str
+
+
 class Attachment(msgspec.Struct, kw_only=True):
     id: ids.AttachmentId
     filename: str
@@ -19,37 +29,8 @@ class Attachment(msgspec.Struct, kw_only=True):
     size: int
     url: str
     proxy_url: str
-    # ?height: int | None = None
-    # ?width: int | None = None
+    media: VisualMedia | AudioMedia | None = None
     ephemeral: bool = False
-    # ?proxy_url: str = ""
-    # ?duration_secs: float = 0
-    flags: AttachmentFlags = AttachmentFlags.none
-
-
-class ImageAttachment(msgspec.Struct, kw_only=True):
-    id: ids.AttachmentId
-    filename: str
-    title: str = ""
-    description: str = ""
-    content_type: str = ""
-    size: int
-    url: str
-    proxy_url: str
-    height: int | None = None
-    width: int | None = None
-    ephemeral: bool = False
-    flags: AttachmentFlags = AttachmentFlags.none
-
-
-class VoiceAttachment(msgspec.Struct, kw_only=True):
-    id: ids.AttachmentId
-    filename: str
-    size: int
-    url: str
-    proxy_url: str
-    duration_secs: float
-    waveform: str
     flags: AttachmentFlags = AttachmentFlags.none
 
 
@@ -65,7 +46,7 @@ class Message(msgspec.Struct, kw_only=True):
     mentions: abc.Sequence[disgrace.abc.User]
     role_mentions: abc.Sequence[ids.RoleId]
     channel_mentions: abc.Sequence[object] = ()
-    attachments: abc.Sequence[object]
+    attachments: abc.Sequence[Attachment]
     embeds: abc.Sequence[Embed]
     reactions: abc.Sequence[object] = ()
     # nonce

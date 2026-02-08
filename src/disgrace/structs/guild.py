@@ -3,9 +3,11 @@ from typing import Literal
 
 import msgspec
 
+from disgrace._msgspec import BaseStruct
+
 from . import raw_ids
+from .common import AssetHash, Bitset, ISOTimestamp
 from .emoji import RawGuildEmoji
-from .misc import AssetHash, BaseStruct, Bitset, ISOTimestamp
 from .sticker import RawSticker
 from .user import RawAvatarDecorationData, RawUser
 

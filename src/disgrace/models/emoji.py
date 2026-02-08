@@ -37,10 +37,6 @@ class UnicodeEmoji(disgrace.abc.Mentionable, msgspec.Struct):
     def require_colons(self) -> Literal[False]:
         return False
 
-    @override
-    def __hash__(self) -> int:
-        return hash(self.name)
-
     @property
     @override
     def mention(self) -> str:
@@ -58,8 +54,6 @@ class GuildEmoji(disgrace.abc.Mentionable, msgspec.Struct):
     available: bool = True
     require_colons: bool = True
 
-    __eq__ = disgrace.abc.Snowflake[ids.GuildEmojiId].__eq__
-    __hash__ = disgrace.abc.Snowflake[ids.GuildEmojiId].__hash__
     created_at = created_at
 
     @property
@@ -95,8 +89,6 @@ class AppEmoji(disgrace.abc.Mentionable, msgspec.Struct):
     def require_colons(self) -> Literal[True]:
         return True
 
-    __eq__ = disgrace.abc.Snowflake[ids.AppEmojiId].__eq__
-    __hash__ = disgrace.abc.Snowflake[ids.AppEmojiId].__hash__
     created_at = created_at
 
     @property

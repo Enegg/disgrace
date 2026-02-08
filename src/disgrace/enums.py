@@ -78,7 +78,6 @@ class UserPremiumType(enum.IntEnum):
     nitro_basic = 3
 
 
-# TODO: none locale?
 class Locale(enum.StrEnum):
     bg = "bg"
     """The ``bg`` (Bulgarian) locale."""

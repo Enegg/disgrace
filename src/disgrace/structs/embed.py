@@ -3,7 +3,7 @@ from typing import Literal
 
 import msgspec
 
-from .misc import ISOTimestamp
+from .common import ISOTimestamp
 
 type RawEmbedType = Literal[
     "rich", "image", "video", "gifv", "article", "link", "poll_result"

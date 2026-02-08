@@ -4,6 +4,7 @@ import msgspec
 
 import disgrace.abc
 from disgrace import ids
+from disgrace._msgspec import BaseModel
 from disgrace.enums import ChannelType
 from disgrace.models.common import cast_str_id
 from disgrace.structs import components
@@ -22,7 +23,7 @@ type AnySelect = (
 )
 
 
-class SelectOption(msgspec.Struct, kw_only=True):
+class SelectOption(BaseModel, frozen=True, kw_only=True):
     label: str
     value: str
     description: str = ""
@@ -39,7 +40,7 @@ class SelectOption(msgspec.Struct, kw_only=True):
         )
 
 
-class StringSelect(msgspec.Struct, kw_only=True):
+class StringSelect(BaseModel, frozen=True, kw_only=True):
     id: int = 0
     custom_id: str
     options: abc.Sequence[SelectOption]
@@ -59,7 +60,7 @@ class StringSelect(msgspec.Struct, kw_only=True):
         )
 
 
-class UserSelect(msgspec.Struct, kw_only=True):
+class UserSelect(BaseModel, frozen=True, kw_only=True):
     id: int = 0
     custom_id: str
     placeholder: str = ""
@@ -83,7 +84,7 @@ class UserSelect(msgspec.Struct, kw_only=True):
         )
 
 
-class RoleSelect(msgspec.Struct, kw_only=True):
+class RoleSelect(BaseModel, frozen=True, kw_only=True):
     id: int = 0
     custom_id: str
     placeholder: str = ""
@@ -107,7 +108,7 @@ class RoleSelect(msgspec.Struct, kw_only=True):
         )
 
 
-class MentionableSelect(msgspec.Struct, kw_only=True):
+class MentionableSelect(BaseModel, frozen=True, kw_only=True):
     id: int = 0
     custom_id: str
     placeholder: str = ""
@@ -140,7 +141,7 @@ class MentionableSelect(msgspec.Struct, kw_only=True):
         )
 
 
-class ChannelSelect(msgspec.Struct, kw_only=True):
+class ChannelSelect(BaseModel, frozen=True, kw_only=True):
     id: int = 0
     custom_id: str
     channel_types: abc.Collection[ChannelType]

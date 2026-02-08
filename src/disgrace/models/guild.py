@@ -3,13 +3,13 @@ from collections import abc
 
 import msgspec
 
-import disgrace.abc
 from disgrace import ids
 from disgrace.asset import Asset
 from disgrace.enums import Locale
-from disgrace.models.common import created_at
 
+from .common import created_at
 from .emoji import GuildEmoji, UnicodeEmoji
+from .permissions import Permissions
 
 # TODO
 type Role = object
@@ -39,10 +39,11 @@ class Guild(msgspec.Struct, kw_only=True):
     id: ids.GuildId
     name: str
     icon: Asset.StaticOrGifAsset | None = None
+    banner: Asset.StaticOrGifAsset | None = None
     splash: Asset.StaticAsset | None = None
     discovery_splash: Asset.StaticAsset | None = None
     owner_id: ids.UserId
-    # permissions
+    permissions: Permissions = msgspec.field(default_factory=Permissions)
     afk_channel_id: ids.ChannelId | None = None
     afk_timeout: int = 0
     widget_enabled: bool = False
@@ -52,6 +53,7 @@ class Guild(msgspec.Struct, kw_only=True):
     explicit_content_filter: int = 0
     roles: abc.Sequence[Role] = ()
     emojis: abc.Sequence[GuildEmoji] = ()
+    stickers: abc.Sequence[Sticker] = ()
     features: abc.Sequence[Feature] = ()
     mfa_level: int = 0
     application_id: ids.ApplicationId | None = None
@@ -67,17 +69,14 @@ class Guild(msgspec.Struct, kw_only=True):
     premium_subscription_count: int = 0
     preferred_locale: Locale = Locale.en_US
     public_updates_channel_id: ids.ChannelId | None = None
+    safety_alerts_channel_id: ids.ChannelId | None = None
     max_video_channel_users: int = 0
     max_stage_video_channel_users: int = 0
     approximate_member_count: int = 0
     approximate_presence_count: int = 0
     welcome_screen: WelcomeScreen | None = None
     nsfw_level: int = 0
-    stickers: abc.Sequence[Sticker] = ()
     premium_progress_bar_enabled: bool = False
-    safety_alerts_channel_id: ids.ChannelId | None = None
     incidents_data: IncidentsData | None = None
 
-    __eq__ = disgrace.abc.Snowflake[ids.GuildId].__eq__
-    __hash__ = disgrace.abc.Snowflake[ids.GuildId].__hash__
     created_at = created_at

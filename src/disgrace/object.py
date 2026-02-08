@@ -18,9 +18,6 @@ class Object[IdT: ids.SnowflakeId = ids.SnowflakeId]:
 
     id: IdT = attrs.field(converter=int)
 
-    __eq__ = disgrace.abc.Snowflake[IdT].__eq__
-    __hash__ = disgrace.abc.Snowflake[IdT].__hash__
-
     if TYPE_CHECKING:
 
         def __init__(self, id: IdT | SupportsIntCast, /) -> None: ...

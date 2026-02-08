@@ -1,8 +1,9 @@
 import msgspec
 
 from disgrace import ids
+from disgrace._msgspec import BaseStruct
 
-from .misc import BaseStruct, StrBitset
+from .common import StrBitset
 
 
 class RawRoleTags(BaseStruct, kw_only=True):

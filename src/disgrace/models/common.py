@@ -2,14 +2,14 @@ import datetime
 from typing import TYPE_CHECKING, overload
 
 from disgrace import ids
-from disgrace.abc import Snowflake
+from disgrace.abc import HasId
 from disgrace.structs import raw_ids
-from disgrace.utils import snowflake_time
+from disgrace.utils import creation_dt
 
 
 @property
-def created_at(self: Snowflake[ids.SnowflakeId]) -> datetime.datetime:
-    return snowflake_time(self.id)
+def created_at(self: HasId[ids.SnowflakeId]) -> datetime.datetime:
+    return creation_dt(self.id)
 
 
 # lgtm 👍

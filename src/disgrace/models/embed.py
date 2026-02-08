@@ -1,7 +1,7 @@
 import datetime
 import enum
 from collections import abc
-from typing import ClassVar, Self
+from typing import ClassVar, Literal, Self
 
 import msgspec
 
@@ -10,13 +10,15 @@ from disgrace.limits import EmbedLimits
 from disgrace.structs import embed
 from disgrace.utils import isoformat_utc
 
+from .._msgspec import BaseModel
+
 
 class EditMode(enum.Enum):
     keep = enum.auto()
     remove = enum.auto()
 
 
-class Footer(msgspec.Struct, frozen=True, kw_only=True):
+class Footer(BaseModel, frozen=True, kw_only=True):
     text: str
     icon_url: str = ""
     proxy_icon_url: str = ""
@@ -29,7 +31,7 @@ class Footer(msgspec.Struct, frozen=True, kw_only=True):
         )
 
 
-class Media(msgspec.Struct, frozen=True, kw_only=True):
+class Media(BaseModel, frozen=True, kw_only=True):
     url: str
     proxy_url: str = ""
 
@@ -40,7 +42,7 @@ class Media(msgspec.Struct, frozen=True, kw_only=True):
         )
 
 
-class Author(msgspec.Struct, frozen=True, kw_only=True):
+class Author(BaseModel, frozen=True, kw_only=True):
     name: str
     url: str = ""
     icon_url: str = ""
@@ -55,7 +57,7 @@ class Author(msgspec.Struct, frozen=True, kw_only=True):
         )
 
 
-class Field(msgspec.Struct, frozen=True, kw_only=True):
+class Field(BaseModel, frozen=True, kw_only=True):
     name: str
     value: str
     inline: bool = True
@@ -68,21 +70,43 @@ class Field(msgspec.Struct, frozen=True, kw_only=True):
         )
 
 
-class EmbedBuilder(msgspec.Struct, kw_only=True):
-    default_color: ClassVar[Color] = Color.none
+class BuilderField(msgspec.Struct, kw_only=True):
+    name: str
+    value: str
+    inline: bool = True
 
+    def edit(
+        self,
+        *,
+        name: str | Literal[EditMode.keep] = EditMode.keep,
+        value: str | Literal[EditMode.keep] = EditMode.keep,
+        inline: bool | Literal[EditMode.keep] = EditMode.keep,
+    ) -> Self:
+        if name is not EditMode.keep:
+            self.name = name
+        if value is not EditMode.keep:
+            self.value = value
+        if inline is not EditMode.keep:
+            self.inline = inline
+        return self
+
+    def to_field(self) -> Field:
+        return Field(name=self.name, value=self.value, inline=self.inline)
+
+
+class EmbedBuilder(msgspec.Struct, kw_only=True):
     title: str = ""
     description: str = ""
     url: str = ""
     timestamp: datetime.datetime | None = None
-    color: Color = Color.none
+    color: Color = msgspec.field(default_factory=lambda: Embed.default_color)
     footer: Footer | None = None
     image: Media | None = None
     thumbnail: Media | None = None
     author: Author | None = None
-    fields: list[Field] = []
+    fields: list[BuilderField] = []
 
-    def set_title(
+    def edit(
         self,
         title: str | EditMode = EditMode.keep,
         description: str | EditMode = EditMode.keep,
@@ -117,36 +141,131 @@ class EmbedBuilder(msgspec.Struct, kw_only=True):
 
         return self
 
-    # TODO
-    def set_footer(
-        self, text: str, *, icon_url: str = "", proxy_icon_url: str = ""
-    ) -> Self: ...
-    def set_image(self, url: str, *, proxy_url: str = "") -> Self: ...
-    def set_author(
-        self, name: str, *, url: str = "", icon_url: str = "", proxy_icon_url: str = ""
-    ) -> Self: ...
-    def add_field(self, name: str, value: str, *, inline: bool = True) -> Self: ...
+    def edit_footer(
+        self,
+        text: str | Literal[EditMode.keep] = EditMode.keep,
+        *,
+        icon_url: str | EditMode = EditMode.keep,
+        proxy_icon_url: str | EditMode = EditMode.keep,
+    ) -> Self:
+        if text is EditMode.keep:
+            if self.footer is None:
+                return self
+
+            text = self.footer.text
+
+        if icon_url is EditMode.remove:
+            icon_url = ""
+        elif icon_url is EditMode.keep:
+            icon_url = self.footer.icon_url if self.footer is not None else ""
+
+        if proxy_icon_url is EditMode.remove:
+            proxy_icon_url = ""
+        elif proxy_icon_url is EditMode.keep:
+            proxy_icon_url = self.footer.proxy_icon_url if self.footer is not None else ""
+
+        self.footer = Footer(text=text, icon_url=icon_url, proxy_icon_url=proxy_icon_url)
+        return self
+
+    def remove_footer(self) -> Self:
+        self.footer = None
+        return self
+
+    def edit_image(
+        self,
+        url: str | Literal[EditMode.keep] = EditMode.keep,
+        *,
+        proxy_url: str | EditMode = EditMode.keep,
+    ) -> Self:
+        if url is EditMode.keep:
+            if self.image is None:
+                return self
+
+            url = self.image.url
+
+        if proxy_url is EditMode.remove:
+            proxy_url = ""
+        elif proxy_url is EditMode.keep:
+            proxy_url = self.image.proxy_url if self.image is not None else ""
+
+        self.image = Media(url=url, proxy_url=proxy_url)
+        return self
+
+    def remove_image(self) -> Self:
+        self.image = None
+        return self
+
+    def edit_author(
+        self,
+        name: str | Literal[EditMode.keep] = EditMode.keep,
+        *,
+        url: str | EditMode = EditMode.keep,
+        icon_url: str | EditMode = EditMode.keep,
+        proxy_icon_url: str | EditMode = EditMode.keep,
+    ) -> Self:
+        if name is EditMode.keep:
+            if self.author is None:
+                return self
+
+            name = self.author.name
+
+        if url is EditMode.remove:
+            url = ""
+        elif url is EditMode.keep:
+            url = self.author.url if self.author is not None else ""
+
+        if icon_url is EditMode.remove:
+            icon_url = ""
+        elif icon_url is EditMode.keep:
+            icon_url = self.author.icon_url if self.author is not None else ""
+
+        if proxy_icon_url is EditMode.remove:
+            proxy_icon_url = ""
+        elif proxy_icon_url is EditMode.keep:
+            proxy_icon_url = self.author.proxy_icon_url if self.author is not None else ""
+
+        self.author = Author(
+            name=name, url=url, icon_url=icon_url, proxy_icon_url=proxy_icon_url
+        )
+        return self
+
+    def remove_author(self) -> Self:
+        self.author = None
+        return self
+
+    def add_field(
+        self,
+        name: str,
+        value: str,
+        *,
+        inline: bool = True,
+    ) -> Self:
+        self.fields.append(BuilderField(name=name, value=value, inline=inline))
+        return self
+
     def build(self) -> "Embed":
         return Embed(
             title=self.title,
             description=self.description,
             url=self.url,
             timestamp=self.timestamp,
-            color=self.color or self.default_color,
+            color=self.color,
             footer=self.footer,
             image=self.image,
             thumbnail=self.thumbnail,
             author=self.author,
-            fields=tuple(self.fields),
+            fields=tuple(field.to_field() for field in self.fields),
         )
 
 
-class Embed(msgspec.Struct, frozen=True, kw_only=True):
+class Embed(BaseModel, frozen=True, kw_only=True):
+    default_color: ClassVar[Color] = Color.none
+
     title: str = ""
     description: str = ""
     url: str = ""
     timestamp: datetime.datetime | None = None
-    color: Color = msgspec.field(default_factory=lambda: EmbedBuilder.default_color)
+    color: Color = msgspec.field(default_factory=lambda: Embed.default_color)
     footer: Footer | None = None
     image: Media | None = None
     thumbnail: Media | None = None
