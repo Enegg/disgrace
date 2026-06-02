@@ -62,14 +62,14 @@ class ValidationContext:
     def add(self, field: str, msg: str) -> None:
         self.diagnostics.append(Diagnostic((*self.path, field), msg))
 
-    def derrive(self, *path: str | int) -> Self:
+    def derive(self, *path: str | int) -> Self:
         return type(self)((*self.path, *path), self.diagnostics)
 
     def enumerate[T](
         self, it: abc.Iterable[T], /, *path: int | str
     ) -> abc.Iterable[tuple[Self, T]]:
         for i, val in enumerate(it):
-            yield self.derrive(*path, i), val
+            yield self.derive(*path, i), val
 
     def check_length_oob(
         self,
@@ -95,12 +95,11 @@ class ValidationContext:
         select_name: str,
         options_field_name: str,
         options: abc.Sized | int,
-        min_values: int,
-        max_values: int,
+        values_range: Range,
         can_be_empty: bool = False,
     ) -> None:
-        min_is_ok = min_values in ComponentLimits.select_min_max_values
-        max_is_ok = max_values in ComponentLimits.select_min_max_values
+        min_is_ok = values_range.min in ComponentLimits.select_min_max_values
+        max_is_ok = values_range.max in ComponentLimits.select_min_max_values
         array_limit = (
             ComponentLimits.select_min_max_values
             if can_be_empty
@@ -110,32 +109,32 @@ class ValidationContext:
 
         if not min_is_ok:
             self.add(
-                "min_values",
-                f"{select_name}.min_values ∉ {ComponentLimits.select_min_max_values} (= {min_values})",  # noqa: E501
+                "values_range.min",
+                f"{select_name}.values_range.min ∉ {ComponentLimits.select_min_max_values} (= {values_range.min})",  # noqa: E501
             )
         if not max_is_ok:
             self.add(
-                "max_values",
-                f"{select_name}.max_values ∉ {ComponentLimits.select_min_max_values} (= {max_values})",  # noqa: E501
+                "values_range.max",
+                f"{select_name}.values_range.max ∉ {ComponentLimits.select_min_max_values} (= {values_range.max})",  # noqa: E501
             )
         if option_count not in array_limit:
             self.add(
                 options_field_name,
                 f"len({select_name}.{options_field_name}) ∉ {array_limit} (= {option_count})",  # noqa: E501
             )
-        if max_values < min_values:
+        if values_range.max < values_range.min:
             self.add(
-                "max_values",
-                f"{select_name}.max_values < {select_name}.min_values ({max_values} < {min_values})",  # noqa: E501
+                "values_range.max",
+                f"{select_name}.values_range.max < {select_name}.values_range.min ({values_range.max} < {values_range.min})",  # noqa: E501
             )
 
         elif can_be_empty and option_count == 0:
             pass
 
-        elif not min_values <= option_count <= max_values:
+        elif not values_range.min <= option_count <= values_range.max:
             self.add(
                 options_field_name,
-                f"len({select_name}.{options_field_name}) ∉ {min_values}..{max_values} (= {option_count}) (min_values..max_values)",  # noqa: E501
+                f"len({select_name}.{options_field_name}) ∉ {values_range.min}..{values_range.max} (= {option_count}) (values_range.min..values_range.max)",  # noqa: E501
             )
 
     def check_text_input(
@@ -223,7 +222,7 @@ def _traverse_components(component: AnyMessageComponent, ctx: ValidationContext)
 
             for subctx, child in ctx.enumerate(component.components, "components"):
                 _traverse_components(child, subctx)
-            _traverse_components(component.accessory, ctx.derrive("accessory"))
+            _traverse_components(component.accessory, ctx.derive("accessory"))
 
         case TextDisplay():
             ...
@@ -295,8 +294,7 @@ def validate_string_select(select: StringSelect, v: ValidationContext) -> None:
         StringSelect.__name__,
         "options",
         select.options,
-        select.min_values,
-        select.max_values,
+        values_range=select.values_range,
     )
 
     for new_v, option in v.enumerate(select.options, "options"):
@@ -355,8 +353,7 @@ def validate_user_select(select: UserSelect, v: ValidationContext) -> None:
         UserSelect.__name__,
         "default_users",
         select.default_users,
-        select.min_values,
-        select.max_values,
+        values_range=select.values_range,
         can_be_empty=True,
     )
 
@@ -378,8 +375,7 @@ def validate_role_select(select: RoleSelect, v: ValidationContext) -> None:
         RoleSelect.__name__,
         "default_roles",
         select.default_roles,
-        select.min_values,
-        select.max_values,
+        values_range=select.values_range,
         can_be_empty=True,
     )
 
@@ -401,8 +397,7 @@ def validate_mentionable_select(select: MentionableSelect, v: ValidationContext)
         UserSelect.__name__,
         "{default_users,default_roles}",
         len(select.default_users) + len(select.default_roles),
-        select.min_values,
-        select.max_values,
+        values_range=select.values_range,
         can_be_empty=True,
     )
 
@@ -424,8 +419,7 @@ def validate_channel_select(select: ChannelSelect, v: ValidationContext) -> None
         UserSelect.__name__,
         "default_channels",
         select.default_channels,
-        select.min_values,
-        select.max_values,
+        values_range=select.values_range,
         can_be_empty=True,
     )
 
@@ -435,7 +429,7 @@ def validate_section(section: Section, v: ValidationContext) -> None:
         Section.__name__,
         "components",
         section.components,
-        ComponentLimits.section_components_range,
+        ComponentLimits.section_components,
     )
 
 

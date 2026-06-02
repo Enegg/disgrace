@@ -4,7 +4,6 @@ from typing import Protocol
 from disgrace import ui
 from disgrace.allowed_mentions import AllowedMentions
 from disgrace.flags import MessageFlags
-from disgrace.models.embed import Embed
 from disgrace.resource import FileResource
 
 type Sticker = object  # TODO: Stickers
@@ -18,7 +17,6 @@ class Messageable(Protocol):
         self,
         content: str | None = None,
         *,
-        embeds: Embed | abc.Sequence[Embed] = (),
         files: FileResource | abc.Sequence[FileResource] = (),
         stickers: abc.Sequence[Sticker] = (),
         flags: MessageFlags = MessageFlags.none,

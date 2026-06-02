@@ -8,6 +8,7 @@ from disgrace._msgspec import BaseModel
 from disgrace.enums import ChannelType
 from disgrace.models.common import cast_str_id
 from disgrace.structs import components
+from disgrace.utils import Range
 
 __all__ = (
     "ChannelSelect",
@@ -45,8 +46,7 @@ class StringSelect(BaseModel, frozen=True, kw_only=True):
     custom_id: str
     options: abc.Sequence[SelectOption]
     placeholder: str = ""
-    min_values: int = 1
-    max_values: int = 1
+    values_range: Range = Range(1, 1)
     disabled: bool = False
 
     def to_struct(self) -> components.RawStringSelect:
@@ -54,8 +54,8 @@ class StringSelect(BaseModel, frozen=True, kw_only=True):
             custom_id=self.custom_id,
             options=[option.to_struct() for option in self.options],
             placeholder=self.placeholder,
-            min_values=self.min_values,
-            max_values=self.max_values,
+            min_values=self.values_range.min,
+            max_values=self.values_range.max,
             disabled=self.disabled,
         )
 
@@ -65,8 +65,7 @@ class UserSelect(BaseModel, frozen=True, kw_only=True):
     custom_id: str
     placeholder: str = ""
     default_users: abc.Sequence[disgrace.abc.Snowflake[ids.UserId]] = ()
-    min_values: int = 1
-    max_values: int = 1
+    values_range: Range = Range(1, 1)
     disabled: bool = False
 
     def to_struct(self) -> components.RawUserSelect:
@@ -77,9 +76,10 @@ class UserSelect(BaseModel, frozen=True, kw_only=True):
                 components.RawSelectDefaultUserValue(id=cast_str_id(user.id))
                 for user in self.default_users
             ]
-            or msgspec.UNSET,
-            min_values=self.min_values,
-            max_values=self.max_values,
+            if self.default_users
+            else msgspec.UNSET,
+            min_values=self.values_range.min,
+            max_values=self.values_range.max,
             disabled=self.disabled,
         )
 
@@ -89,8 +89,7 @@ class RoleSelect(BaseModel, frozen=True, kw_only=True):
     custom_id: str
     placeholder: str = ""
     default_roles: abc.Sequence[disgrace.abc.Snowflake[ids.RoleId]] = ()
-    min_values: int = 1
-    max_values: int = 1
+    values_range: Range = Range(1, 1)
     disabled: bool = False
 
     def to_struct(self) -> components.RawRoleSelect:
@@ -101,9 +100,10 @@ class RoleSelect(BaseModel, frozen=True, kw_only=True):
                 components.RawSelectDefaultRoleValue(id=cast_str_id(role.id))
                 for role in self.default_roles
             ]
-            or msgspec.UNSET,
-            min_values=self.min_values,
-            max_values=self.max_values,
+            if self.default_roles
+            else msgspec.UNSET,
+            min_values=self.values_range.min,
+            max_values=self.values_range.max,
             disabled=self.disabled,
         )
 
@@ -114,8 +114,7 @@ class MentionableSelect(BaseModel, frozen=True, kw_only=True):
     placeholder: str = ""
     default_users: abc.Sequence[disgrace.abc.Snowflake[ids.UserId]] = ()
     default_roles: abc.Sequence[disgrace.abc.Snowflake[ids.RoleId]] = ()
-    min_values: int = 1
-    max_values: int = 1
+    values_range: Range = Range(1, 1)
     disabled: bool = False
 
     def to_struct(self) -> components.RawMentionableSelect:
@@ -135,8 +134,8 @@ class MentionableSelect(BaseModel, frozen=True, kw_only=True):
             custom_id=self.custom_id,
             placeholder=self.placeholder,
             default_values=default_values or msgspec.UNSET,
-            min_values=self.min_values,
-            max_values=self.max_values,
+            min_values=self.values_range.min,
+            max_values=self.values_range.max,
             disabled=self.disabled,
         )
 
@@ -147,8 +146,7 @@ class ChannelSelect(BaseModel, frozen=True, kw_only=True):
     channel_types: abc.Collection[ChannelType]
     placeholder: str = ""
     default_channels: abc.Sequence[disgrace.abc.Snowflake[ids.ChannelId]] = ()
-    min_values: int = 1
-    max_values: int = 1
+    values_range: Range = Range(1, 1)
     disabled: bool = False
 
     def to_struct(self) -> components.RawChannelSelect:
@@ -160,8 +158,9 @@ class ChannelSelect(BaseModel, frozen=True, kw_only=True):
                 components.RawSelectDefaultChannelValue(id=cast_str_id(channel.id))
                 for channel in self.default_channels
             ]
-            or msgspec.UNSET,
-            min_values=self.min_values,
-            max_values=self.max_values,
+            if self.default_channels
+            else msgspec.UNSET,
+            min_values=self.values_range.min,
+            max_values=self.values_range.max,
             disabled=self.disabled,
         )

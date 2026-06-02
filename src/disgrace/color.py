@@ -1,6 +1,6 @@
 import colorsys
 import random
-from typing import ClassVar, Protocol, Self
+from typing import Protocol, Self
 
 import attrs
 
@@ -15,8 +15,6 @@ class RandomGen(Protocol):
 class Color:
     """A Discord color value."""
 
-    none: ClassVar[Self]
-    """Special value denoting lack of color."""
     value: int
     """The raw color value."""
 
@@ -56,9 +54,6 @@ class Color:
         return cls(int(value.removeprefix("#").removeprefix("0x"), base=16))
 
     @classmethod
-    def random(cls, *, gen: RandomGen = random) -> Self:
+    def random_hue(cls, *, gen: RandomGen = random) -> Self:
         """Create a `Color` with random hue."""
         return cls.from_hsv(gen.random(), 1, 1)
-
-
-Color.none = Color(0)

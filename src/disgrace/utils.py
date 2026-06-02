@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from typing import TYPE_CHECKING, Final, NoReturn, final, override
 
 import attrs
@@ -8,13 +8,13 @@ from disgrace.ids import SnowflakeId
 DISCORD_EPOCH: Final = 1_420_070_400_000
 
 
-def isoformat_utc(dt: datetime.datetime, /) -> str:
-    return dt.astimezone(datetime.UTC).isoformat()
+def isoformat_utc(dt_: dt.datetime, /) -> str:
+    return dt_.astimezone(dt.UTC).isoformat()
 
 
-def creation_dt(id: SnowflakeId, /) -> datetime.datetime:
+def creation_dt(id: SnowflakeId, /) -> dt.datetime:
     timestamp_ms = (id >> 22) + DISCORD_EPOCH
-    return datetime.datetime.fromtimestamp(timestamp_ms / 1000, tz=datetime.UTC)
+    return dt.datetime.fromtimestamp(timestamp_ms / 1000, tz=dt.UTC)
 
 
 @final

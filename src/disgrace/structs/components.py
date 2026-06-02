@@ -134,8 +134,11 @@ class SeparatorSpacingNS(Namespace):
 
 
 class BaseComponent(BaseStruct, tag_field="type"):
-    # TODO: ReadOnly[ClassVar[LiteralComponentType]]
-    type: ClassVar[Any | int]
+    # TODO: ReadOnly[ClassVar[ComponentType]]
+    type: ClassVar[ComponentType | int | Any]
+
+    def to_struct(self) -> Self:
+        return self
 
 
 # -------------------------------------- action row --------------------------------------
@@ -156,6 +159,9 @@ class RawActionRow(BaseComponent, tag=ComponentTypeNS.action_row, kw_only=True):
 
 
 # ---------------------------------------- button ----------------------------------------
+type ActionButtonStyle = Literal[1, 2, 3, 4]
+
+
 class RawButton(BaseComponent, tag=ComponentTypeNS.button, kw_only=True):
     type: ClassVar[Literal[2]]
     id: int = 0
@@ -166,6 +172,54 @@ class RawButton(BaseComponent, tag=ComponentTypeNS.button, kw_only=True):
     sku_id: raw_ids.SkuId | msgspec.UnsetType = msgspec.UNSET
     url: str = ""
     disabled: bool = False
+
+    @classmethod
+    def action_button(
+        cls,
+        *,
+        custom_id: str,
+        id: int = 0,
+        style: ActionButtonStyle = ButtonStyleNS.secondary,
+        label: str = "",
+        emoji: PartialEmoji | msgspec.UnsetType = msgspec.UNSET,
+        disabled: bool = False,
+    ) -> Self:
+        """Button that emits an interaction."""
+        return cls(
+            id=id,
+            style=style,
+            label=label,
+            emoji=emoji,
+            custom_id=custom_id,
+            disabled=disabled,
+        )
+
+    @classmethod
+    def link_button(
+        cls,
+        *,
+        url: str,
+        id: int = 0,
+        label: str = "",
+        emoji: PartialEmoji | msgspec.UnsetType = msgspec.UNSET,
+        disabled: bool = False,
+    ) -> Self:
+        """Button that links to a URL."""
+        return cls(
+            id=id,
+            style=ButtonStyleNS.link,
+            label=label,
+            emoji=emoji,
+            url=url,
+            disabled=disabled,
+        )
+
+    @classmethod
+    def sku_button(
+        cls, *, sku_id: raw_ids.SkuId, id: int = 0, disabled: bool = False
+    ) -> Self:
+        """Button that represents a purchaseable SKU."""
+        return cls(id=id, style=ButtonStyleNS.premium, sku_id=sku_id, disabled=disabled)
 
 
 # ------------------------------------ string select -------------------------------------
@@ -205,9 +259,6 @@ class TextInput(BaseComponent, tag=ComponentTypeNS.text_input, kw_only=True):
     required: bool = True
     value: str = ""
     placeholder: str = ""
-
-    def to_struct(self) -> Self:
-        return self
 
 
 # ---------------------- user / role / mentionable / channel select ----------------------
@@ -285,14 +336,14 @@ class RawChannelSelect(BaseComponent, tag=8, kw_only=True):
 
 
 # --------------------------------------- section ----------------------------------------
-type RawSectionChild = TextDisplay
+type RawSectionComponents = TextDisplay
 type RawSectionAccessory = RawButton | Thumbnail
 
 
 class RawSection(BaseComponent, tag=9, kw_only=True):
     type: ClassVar[Literal[9]]
     id: int = 0
-    components: abc.Sequence[RawSectionChild]
+    components: abc.Sequence[RawSectionComponents]
     accessory: RawSectionAccessory
 
 
@@ -303,9 +354,6 @@ class TextDisplay(BaseComponent, tag=10, kw_only=True):
     type: ClassVar[Literal[10]]
     id: int = 0
     content: str
-
-    def to_struct(self) -> Self:
-        return self
 
 
 # -------------------------------------- thumbnail ---------------------------------------
@@ -321,9 +369,6 @@ class Thumbnail(BaseComponent, tag=11, kw_only=True):
     media: UnfurledMediaItem
     description: str = ""
     spoiler: bool = False
-
-    def to_struct(self) -> Self:
-        return self
 
 
 # ------------------------------------ media gallery -------------------------------------
@@ -342,21 +387,15 @@ class MediaGallery(BaseComponent, tag=12, kw_only=True):
     id: int = 0
     items: abc.Sequence[MediaGalleryItem]
 
-    def to_struct(self) -> Self:
-        return self
-
 
 # ----------------------------------------- file -----------------------------------------
 class File(BaseComponent, tag=13, kw_only=True):
-    """A content UI component that allows you to display an uploded file."""
+    """A content UI component that allows you to display an uploaded file."""
 
     type: ClassVar[Literal[13]]
     id: int = 0
     file: UnfurledMediaItem
     spoiler: bool = False
-
-    def to_struct(self) -> Self:
-        return self
 
 
 # -------------------------------------- separator ---------------------------------------
@@ -368,12 +407,9 @@ class Separator(BaseComponent, tag=14, kw_only=True):
     divider: bool = True
     spacing: SeparatorSpacing = SeparatorSpacingNS.small
 
-    def to_struct(self) -> Self:
-        return self
-
 
 # -------------------------------------- container ---------------------------------------
-type RawContainerChild = (
+type RawContainerComponents = (
     RawActionRow | TextDisplay | RawSection | MediaGallery | Separator | File
 )
 
@@ -381,14 +417,14 @@ type RawContainerChild = (
 class RawContainer(BaseComponent, tag=17, kw_only=True):
     type: ClassVar[Literal[17]]
     id: int = 0
-    components: abc.Sequence[RawContainerChild]
+    components: abc.Sequence[RawContainerComponents]
     # #000000 is a valid color
     accent_color: int | msgspec.UnsetType = msgspec.UNSET
     spoiler: bool = False
 
 
 # ---------------------------------------- label -----------------------------------------
-type RawLabelChild = TextInput | AnyRawSelect
+type RawLabelComponent = TextInput | AnyRawSelect
 
 
 class RawLabel(BaseComponent, tag=18, kw_only=True):
@@ -396,4 +432,4 @@ class RawLabel(BaseComponent, tag=18, kw_only=True):
     id: int = 0
     label: str
     description: str = ""
-    component: RawLabelChild
+    component: RawLabelComponent

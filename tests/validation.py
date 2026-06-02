@@ -3,6 +3,7 @@ import rich
 
 from disgrace.ui.selects import SelectOption, StringSelect
 from disgrace.ui.validation import validate_components
+from disgrace.utils import Range
 
 s = StringSelect(
     custom_id="123" * 34,
@@ -11,8 +12,7 @@ s = StringSelect(
         SelectOption(label="1", value="2", description="3" * 101),
     )
     + (SelectOption(label="1", value="2"),) * 25,
-    min_values=35,
-    max_values=70,
+    values_range=Range(35, 70),
 )
 ctx = validate_components(s)
 print("\n".join(map(str, ctx)))

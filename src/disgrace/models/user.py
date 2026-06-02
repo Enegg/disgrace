@@ -12,11 +12,6 @@ from disgrace.flags import UserFlags
 from .common import created_at
 
 
-class AvatarDecoration(msgspec.Struct, kw_only=True):
-    asset: Asset.PngAsset
-    sku_id: ids.SkuId
-
-
 class User(disgrace.abc.Mentionable, msgspec.Struct, kw_only=True):
     null: ClassVar[Self]
 
@@ -27,16 +22,13 @@ class User(disgrace.abc.Mentionable, msgspec.Struct, kw_only=True):
     avatar: Asset.StaticOrGifAsset | None = None
     bot: bool = False
     system: bool = False
-    mfa_enabled: bool = False
     banner: Asset.StaticOrGifAsset | None = None
-    accent_color: Color = Color.none
-    locale: Locale = Locale.en_US
+    accent_color: Color | None = None
+    locale: Locale = Locale.default
     verified: bool = False
-    email: str | None = None
     flags: UserFlags = UserFlags.none
     premium_type: UserPremiumType = UserPremiumType.none
     public_flags: UserFlags = UserFlags.none
-    avatar_decoration: AvatarDecoration | None = None
 
     created_at = created_at
 
@@ -47,6 +39,12 @@ class User(disgrace.abc.Mentionable, msgspec.Struct, kw_only=True):
     @override
     def mention(self) -> str:
         return f"<@{self.id}>"
+
+    @property
+    def display_name(self) -> str:
+        if self.global_name is not None:
+            return self.global_name
+        return self.username
 
 
 User.null = User(

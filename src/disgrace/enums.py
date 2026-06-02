@@ -143,3 +143,6 @@ class Locale(enum.StrEnum):
     """The ``zh-CN`` (Chinese, China) locale."""
     zh_TW = "zh-TW"
     """The ``zh-TW`` (Chinese, Taiwan) locale."""
+
+    default = en_US
+    """The default locale assumed by discord."""

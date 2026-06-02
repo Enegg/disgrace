@@ -87,6 +87,9 @@ extend-immutable-calls = [
     "typing.cast"
 ]
 
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+datetime = "dt"
+
 [tool.ruff.lint.pylint]
 allow-dunder-method-names = [
     "__attrs_pre_init__ ",

@@ -1,5 +1,6 @@
-import datetime
-from typing import TYPE_CHECKING, Self, SupportsInt
+import datetime as dt
+from collections import abc
+from typing import TYPE_CHECKING, Self, SupportsIndex, SupportsInt
 
 import attrs
 
@@ -9,7 +10,7 @@ from disgrace import ids
 
 __all__ = ("Object",)
 
-type SupportsIntCast = SupportsInt | str | bytes | bytearray
+type SupportsIntCast = SupportsIndex | SupportsInt | str | abc.Buffer
 
 
 @attrs.frozen
@@ -23,14 +24,14 @@ class Object[IdT: ids.SnowflakeId = ids.SnowflakeId]:
         def __init__(self, id: IdT | SupportsIntCast, /) -> None: ...
 
     @classmethod
-    def from_timestamp(cls, ts_ms: int | datetime.datetime, /) -> Self:
-        if isinstance(ts_ms, datetime.datetime):
-            ts_ms = int(ts_ms.timestamp() * 1000)
+    def from_timestamp(cls, timestamp_ms: int | dt.datetime, /) -> Self:
+        if isinstance(timestamp_ms, dt.datetime):
+            timestamp_ms = int(timestamp_ms.timestamp() * 1000)
 
-        return cls(ts_ms - disgrace.utils.DISCORD_EPOCH << 22)
+        return cls(timestamp_ms - disgrace.utils.DISCORD_EPOCH << 22)
 
-    def created_after(self, snowflake: disgrace.abc.HasId[ids.SnowflakeId], /) -> bool:
+    def created_after(self, snowflake: disgrace.abc.Snowflake, /) -> bool:
         return self.id >> 22 > snowflake.id >> 22
 
-    def created_before(self, snowflake: disgrace.abc.HasId[ids.SnowflakeId], /) -> bool:
+    def created_before(self, snowflake: disgrace.abc.Snowflake, /) -> bool:
         return self.id >> 22 < snowflake.id >> 22

@@ -1,8 +1,8 @@
 """Collection of functions related to discord flavored markdown formatting."""
 
-import datetime
+import datetime as dt
 import enum
-from typing import Literal, override
+from typing import Literal, SupportsIndex, override
 
 import disgrace.abc
 from disgrace.ids import RoleId
@@ -19,13 +19,13 @@ def codeblock(text: str, lang: str = "") -> str:
 
 
 def format_dt(
-    dt: datetime.datetime | float | int,
+    dt_: dt.datetime | float | int | SupportsIndex,
     /,
     style: Literal["f", "F", "d", "D", "t", "T", "R"] = "f",
 ) -> str:
     R"""Format a `datetime.datetime`, `int` or `float` for presentation within Discord.
 
-    The exact output depends on the user's locale setting in the client.
+    The exact appearance depends on the user's locale setting in the client.
     The example output below is using the ``en-GB`` locale.
 
     +-------+----------------------------+-----------------+
@@ -56,9 +56,9 @@ def format_dt(
     style:
         The style to format the datetime with. Defaults to ``f``.
     """
-    if isinstance(dt, datetime.datetime):
-        dt = dt.timestamp()
-    return f"<t:{int(dt)}:{style}>"
+    if isinstance(dt_, dt.datetime):
+        dt_ = dt_.timestamp()
+    return f"<t:{int(dt_)}:{style}>"
 
 
 class GuildNavigation(enum.StrEnum):

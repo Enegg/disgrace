@@ -10,12 +10,12 @@ from .selects import AnySelect
 class Label(msgspec.Struct, kw_only=True):
     """A layout UI component that wraps modal components."""
 
-    type LabelChild = TextInput | AnySelect
+    type LabelComponent = TextInput | AnySelect
 
     id: int = 0
     label: str
     description: str = ""
-    component: LabelChild
+    component: LabelComponent
 
     def to_struct(self) -> components.RawLabel:
         return components.RawLabel(

@@ -1,14 +1,14 @@
-import datetime
+import datetime as dt
 from typing import TYPE_CHECKING, overload
 
+import disgrace.abc
 from disgrace import ids
-from disgrace.abc import HasId
 from disgrace.structs import raw_ids
 from disgrace.utils import creation_dt
 
 
 @property
-def created_at(self: HasId[ids.SnowflakeId]) -> datetime.datetime:
+def created_at(self: disgrace.abc.Snowflake) -> dt.datetime:
     return creation_dt(self.id)
 
 

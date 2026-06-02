@@ -19,10 +19,10 @@ from .selects import AnySelect
 class ActionRow(msgspec.Struct, kw_only=True):
     """A layout UI component that contains a group of buttons or a select menu."""
 
-    type ActionRowChild = AnyButton | AnySelect
+    type ActionRowComponents = AnyButton | AnySelect
 
     id: int = 0
-    components: abc.Sequence[ActionRowChild]
+    components: abc.Sequence[ActionRowComponents]
 
     def to_struct(self) -> components_.RawActionRow:
         return components_.RawActionRow(
@@ -34,11 +34,11 @@ class ActionRow(msgspec.Struct, kw_only=True):
 class Section(msgspec.Struct, kw_only=True):
     """A layout UI component that associates content with an accessory."""
 
-    type SectionChild = TextDisplay
+    type SectionComponents = TextDisplay
     type SectionAccessory = AnyButton | Thumbnail
 
     id: int = 0
-    components: abc.Sequence[SectionChild]
+    components: abc.Sequence[SectionComponents]
     accessory: SectionAccessory
 
     def to_struct(self) -> components_.RawSection:
@@ -50,14 +50,14 @@ class Section(msgspec.Struct, kw_only=True):
 
 
 class Container(msgspec.Struct, kw_only=True):
-    """A layout UI component that encapsulates a collection of components."""
+    """A layout UI component that encapsulates other components."""
 
-    type ContainerChild = (
+    type ContainerComponents = (
         ActionRow | TextDisplay | Section | MediaGallery | Separator | File
     )
 
     id: int = 0
-    components: abc.Sequence[ContainerChild]
+    components: abc.Sequence[ContainerComponents]
     accent_color: Color | None = None
     spoiler: bool = False
 
@@ -65,8 +65,8 @@ class Container(msgspec.Struct, kw_only=True):
         return components_.RawContainer(
             id=self.id,
             components=[c.to_struct() for c in self.components],
-            accent_color=self.accent_color.value
-            if self.accent_color is not None
-            else msgspec.UNSET,
+            accent_color=msgspec.UNSET
+            if self.accent_color is None
+            else self.accent_color.value,
             spoiler=self.spoiler,
         )

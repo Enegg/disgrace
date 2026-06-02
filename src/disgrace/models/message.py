@@ -7,7 +7,6 @@ import disgrace.abc
 from disgrace import ids
 from disgrace.enums import MessageType
 from disgrace.flags import AttachmentFlags, MessageFlags
-from disgrace.models.embed import Embed
 
 
 class VisualMedia(msgspec.Struct, kw_only=True):
@@ -47,7 +46,6 @@ class Message(msgspec.Struct, kw_only=True):
     role_mentions: abc.Sequence[ids.RoleId]
     channel_mentions: abc.Sequence[object] = ()
     attachments: abc.Sequence[Attachment]
-    embeds: abc.Sequence[Embed]
     reactions: abc.Sequence[object] = ()
     # nonce
     pinned: bool

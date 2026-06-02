@@ -79,7 +79,7 @@ class ComponentLimits(Namespace):
     """Maximum length of a TextInput's value."""
     text_input_placeholder: Final = 100
     """Maximum length of a TextInput's placeholder."""
-    section_components_range: Final = Range(1, 3)
+    section_components: Final = Range(1, 3)
     """Maximum range of child components a Section can have."""
     media_description: Final = 1024
     """Maximum length of a media component's description."""
